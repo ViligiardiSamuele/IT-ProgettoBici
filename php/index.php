@@ -1,6 +1,4 @@
 <?php
-session_start();
-header("Access-Control-Allow-Origin: *");
 
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
