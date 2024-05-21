@@ -1,18 +1,20 @@
 services:
-  my_web:
+  web:
+    container_name: web
     user: ${MY_UID}:${MY_GID}
     build:
       context: ./build
       dockerfile: Dockerfile.php
       args:
         UID: ${MY_UID}
-        GID: ${MY_GID}      
+        GID: ${MY_GID}
     ports:
       - 8080:80
     volumes:
       - "./php:/var/www/html"
 
-  my_mariadb:
+  mariadb:
+    container_name: mariadb
     user: ${MY_UID}:${MY_GID}
     build:
       context: ./build
@@ -21,20 +23,24 @@ services:
         UID: ${MY_UID}
         GID: ${MY_GID}
     environment:
-      - MARIADB_ROOT_PASSWORD=ciccio
-      - MARIADB_DATABASE=scuola
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=bici
     volumes:
       - "./mysql:/var/lib/mysql"
       - "./build/init.sql:/docker-entrypoint-initdb.d/init.sql"
+    ports:
+      - "3306:3306"
 
-  my_phpMyAdmin:
+  phpMyAdmin:
+    container_name: phpmyadmin
     image: phpmyadmin
     ports:
       - 8081:80
     environment:
-      - PMA_HOST=my_mariadb
+      - PMA_HOST=mariadb
 
-  my_node:
+  node:
+    container_name: node
     user: ${MY_UID}:${MY_GID}
     build:
       context: ./build
@@ -46,4 +52,3 @@ services:
       - 3000:3000
     volumes:
       - "./app:/app"
-
