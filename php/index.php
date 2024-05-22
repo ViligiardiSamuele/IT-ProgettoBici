@@ -38,7 +38,7 @@ $app->add(function (Request $request, RequestHandlerInterface $handler): Respons
 
     $response = $handler->handle($request);
 
-    $response = $response->withHeader('Access-Control-Allow-Origin', implode(',', Config::$CORS_domains));
+    $response = $response->withHeader('Access-Control-Allow-Origin', Config::$cors_domain);
     $response = $response->withHeader('Access-Control-Allow-Methods', implode(',', $methods));
     $response = $response->withHeader('Access-Control-Allow-Headers', $requestHeaders);
 

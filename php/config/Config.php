@@ -11,8 +11,5 @@ class Config
         'password' => 'root'
     ];
 
-    static $CORS_domains = [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000'
-    ];
+    static $cors_domain = 'http://localhost:3000';
 }
