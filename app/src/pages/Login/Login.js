@@ -13,14 +13,15 @@ export default function Login() {
 
   async function login(event) {
     event.preventDefault();
-    let response = await fetch(`http://localhost:8080/session/login`, {
+
+    const request = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email, password: password }),
-    });
-    console.log(response);
-    response = await response.json();
-    
+      credentials: 'include' 
+    };
+
+    const response = await fetch(`http://localhost:8080/login`, request);
   }
 
   return (
