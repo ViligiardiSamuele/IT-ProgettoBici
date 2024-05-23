@@ -39,15 +39,15 @@ insert into
   Utenti (nome, cognome, email, psw)
 values
   (
-    '1@gmail.com',
     'Tizio',
     'Brutto',
+    '1@gmail.com',
     SHA2 ('1234', 256)
   ),
   (
-    '2@gmail.com',
     'Tizia',
     'Brutta',
+    '2@gmail.com',
     SHA2 ('4321', 256)
   );
 

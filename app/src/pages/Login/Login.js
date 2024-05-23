@@ -5,7 +5,7 @@ import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export default function Login() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email, password: password }),
-      credentials: 'include' 
+      credentials: "include",
     };
 
     const response = await fetch(`http://localhost:8080/login`, request);

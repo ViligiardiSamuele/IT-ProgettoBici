@@ -55,6 +55,7 @@ $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $app->get('/', "DebugController:status");
 
 $app->group('/login', function (RouteCollectorProxy $group) {
+    $group->get('', 'SessionController:login');
     $group->post('', 'SessionController:login');
     $group->options('', function ($request, $response, $args){
         return $response;
