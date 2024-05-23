@@ -21,7 +21,18 @@ export default function Login() {
       credentials: "include",
     };
 
-    const response = await fetch(`http://localhost:8080/login`, request);
+    try {
+      const response = await fetch(`http://localhost:8080/login`, request);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      localStorage.setItem("id_utente", data.id_utente);
+    } catch (error) {
+      console.error("Errore durante il login:", error);
+    }
   }
 
   return (

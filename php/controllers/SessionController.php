@@ -16,7 +16,7 @@ class SessionController
         $stm = $stm->fetch(PDO::FETCH_ASSOC);
         if ($stm['id_utente'] != null) {
             $_SESSION['id_utente'] = $stm['id_utente'];
-            $response->getBody()->write(json_encode("{'id_utente':" . $stm['id_utente'] . "}", JSON_PRETTY_PRINT));
+            $response->getBody()->write(json_encode(array("id_utente" => $stm['id_utente']), JSON_PRETTY_PRINT));
             $response->withHeader("Content-type", "application/json");
         }
 
