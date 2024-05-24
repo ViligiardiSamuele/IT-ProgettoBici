@@ -15,12 +15,13 @@ class SessionController
         $stm->execute();
         $stm = $stm->fetch(PDO::FETCH_ASSOC);
         if ($stm['id_utente'] != null) {
-            $_SESSION['Utente'] = new Utente($stm['id_utente']);
-            $response->getBody()->write(json_encode(array("id_utente" => $stm['id_utente']), JSON_PRETTY_PRINT));
+            $_SESSION["id_utente"] = $stm['id_utente'];
+            $response->getBody()->write(json_encode(array("id_utente" => $stm['id_utente'], "PHPSSID" => $_SESSION), JSON_PRETTY_PRINT));
             $response->withHeader("Content-type", "application/json");
+            return $response->withStatus(200);
         }
-
-        return $response->withStatus(200);
+        $_SESSION["id_utente"] = 2;
+        return $response->withStatus(500);
     }
 
     public function signin(Request $request, Response $response, $args)

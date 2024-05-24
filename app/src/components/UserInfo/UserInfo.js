@@ -5,12 +5,7 @@ import Col from "react-bootstrap/esm/Col";
 import Table from "react-bootstrap/Table";
 
 export default function UserInfo() {
-  const [user, setUser] = useState({
-    nome: "samuele",
-    cognome: "viligiardi",
-    nIscrizioni: 2,
-    nGareModerate: 1,
-  });
+  const [user, setUser] = useState("");
 
   async function loadUserInfo() {
     const request = {
@@ -18,16 +13,22 @@ export default function UserInfo() {
     };
 
     const response = await fetch(
-      `http://localhost:8080/user/${localStorage.getItem("id_utente")}`,
+      `http://localhost:8080/user`,
       request
     );
-    const json = response.json();
-    console.log(json);
+    const json = await response.json();
+    const data = {
+      nome: json['nome'],
+      cognome: json['cognome'],
+      iscizioni: json['iscrizioni'].length,
+      gareGestite: json['gareGestite'].length,
+    }
+    setUser(data);
   }
 
   useEffect(() => {
     loadUserInfo();
-  });
+  }, []);
 
   return (
     <>
@@ -50,12 +51,12 @@ export default function UserInfo() {
             <tbody>
               <tr>
                 <td>
-                  Iscritto a: {user.nIscrizioni}{" "}
-                  {user.nIscrizioni > 1 ? "gare" : "gara"}
+                  Iscritto a: {user.iscizioni}{" "}
+                  {user.iscizioni > 1 ? "gare" : "gara"}
                 </td>
               </tr>
               <tr>
-                <td>Moderatore di: {user.nGareModerate} {user.nGareModerate > 1 ? "gare" : "gara"}</td>
+                <td>Moderatore di: {user.gareGestite} {user.gareGestite > 1 ? "gare" : "gara"}</td>
               </tr>
             </tbody>
           </Table>

@@ -1,15 +1,16 @@
 <?php
+session_start();
 
-class Utente
+class Utente implements JsonSerializable
 {
-    private string $id_utente;
-    private string $nome;
-    private string $cognome;
-    private string $nascita;
-    private string $email;
+    private $id_utente;
+    protected $nome;
+    protected $cognome;
+    protected $nascita;
+    protected $email;
 
-    private string $iscrizioni;
-    private string $gareGestite;
+    protected $iscrizioni = array();
+    protected $gareGestite = array();
 
     public function __construct($id_utente)
     {
@@ -19,9 +20,10 @@ class Utente
 
     public function updateInfo()
     {
+        //Dati utente
         $stm = Database::getInstance()->prepare("
-            select id_gara
-            from Concorrenti
+            select nome, cognome, nascita, email
+            from Utenti
             where id_utente = :id_utente
         ");
         $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_STR);
@@ -32,12 +34,70 @@ class Utente
         $this->nascita = $stm['nascita'];
         $this->email = $stm['email'];
 
+        //Iscrizioni
         $stm = Database::getInstance()->prepare("
-            select nome, cognome, nascita, email
-            from Utenti
+            select id_gara
+            from Concorrenti
             where id_utente = :id_utente
         ");
+        $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_STR);
+        $stm->execute();
+        $stm = $stm->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($stm as $array) {
+            foreach ($array as $value) {
+                array_push($this->iscrizioni, (int) $value);
+            }
+        }
 
+        //Gare gestite
+        $stm = Database::getInstance()->prepare("
+            select id_gara
+            from Organizzatori
+            where id_utente = :id_utente
+        ");
+        $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_STR);
+        $stm->execute();
+        $stm = $stm->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($stm as $array) {
+            foreach ($array as $value) {
+                array_push($this->gareGestite, (int) $value);
+            }
+        }
+    }
+
+    function getId_utente()
+    {
+        return $this->id_utente;
+    }
+
+    function getNome()
+    {
+        return $this->nome;
+    }
+
+    function getCognome()
+    {
+        return $this->cognome;
+    }
+
+    function getNascita()
+    {
+        return $this->nascita;
+    }
+
+    function getEmail()
+    {
+        return $this->email;
+    }
+
+    function getIscrizioni()
+    {
+        return $this->iscrizioni;
+    }
+
+    function getGareGestite()
+    {
+        return $this->gareGestite;
     }
 
     public function jsonSerialize()

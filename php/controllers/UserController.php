@@ -8,23 +8,14 @@ class UserController
 {
     public function userInfo(Request $request, Response $response, $args)
     {
+        $Utente = new Utente($_SESSION["id_utente"]);
+        $response->getBody()->write(json_encode($Utente));
+        return $response->withHeader("Content-type", "application/json")->withStatus(200);
+    }
 
-        if (isset($_SESSION['User'])) {
-            $_SESSION['Utente']->updateInfo();
-            $response->getBody()->write(json_encode($_SESSION['Utente']));
-        } else {
-
-            $response->getBody()->write(
-                json_encode(
-                    [
-                        'Error' => '500',
-                        'msg' => 'No id found'
-                    ]
-                )
-            );
-            return $response->withHeader("Content-type", "application/json")->withStatus(500);
-        }
-
+    public function userInfoByID(Request $request, Response $response, $args)
+    {
+        $response->getBody()->write(json_encode(new Utente($args['id'])));
         return $response->withHeader("Content-type", "application/json")->withStatus(200);
     }
 }

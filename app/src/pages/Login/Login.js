@@ -1,7 +1,6 @@
 import "./Login.css";
 
 import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
@@ -9,8 +8,8 @@ import { Link } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("1@gmail.com");
+  const [password, setPassword] = useState("1234");
 
   async function login(event) {
     event.preventDefault();

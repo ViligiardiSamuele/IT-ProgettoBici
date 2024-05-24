@@ -3,7 +3,7 @@
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class DebugController
+class StatusController
 {
   public function status(Request $request, Response $response, $args)
   {
