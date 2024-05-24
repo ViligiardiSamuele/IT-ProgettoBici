@@ -12,9 +12,11 @@ export default function NavbarTop() {
       </Container>
       <Container className="justify-content-end">
         <Navbar.Text>
-          <Link to="/login">
-            <Button>Login</Button>
-          </Link>
+          {localStorage.getItem("id_utente") == null && (
+            <Link to="/login">
+              <Button>Login</Button>
+            </Link>
+          )}
         </Navbar.Text>
       </Container>
     </Navbar>

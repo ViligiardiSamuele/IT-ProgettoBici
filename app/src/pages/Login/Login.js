@@ -5,7 +5,8 @@ import Container from "react-bootstrap/esm/Container";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
-import { Link, redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -23,20 +24,20 @@ export default function Login() {
 
     try {
       const response = await fetch(`http://localhost:8080/login`, request);
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
+      if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       localStorage.setItem("id_utente", data.id_utente);
     } catch (error) {
       console.error("Errore durante il login:", error);
     }
+    window.location.reload();
   }
 
   return (
     <div className="App">
+      {localStorage.getItem("id_utente") != null && (
+        <Navigate to="/" replace={true} />
+      )}
       <Container className="position-absolute top-50 start-50 translate-middle larghezza">
         <div className="background rounded p-1">
           <Card className="p-3">
