@@ -10,22 +10,26 @@ export default function Home() {
   return (
     <div className="App">
       <NavbarTop />
-      <Container>
-        <Row>
-          <Col sm={12} className="p-2">
-            <Card className="p-2">
+      {localStorage.getItem("id_utente") != null ? (
+        <Container className="">
+          <Row>
+            <Col sm={12} className="p-2">
               <UserInfo />
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={4} className="p-2">
-            <Card className="p-2">
-              <p>2</p>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+            </Col>
+          </Row>
+          <Row>
+            <Col sm={6} className="p-2 ">
+              <Card className="p-2 shadow-lg rounded">
+                <>Lista Gare</>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      ) : (
+        <Card className="m-5 p-5">
+          <h1 className="text-center">Accedi per visualizzare la dashboard</h1>
+        </Card>
+      )}
     </div>
   );
 }

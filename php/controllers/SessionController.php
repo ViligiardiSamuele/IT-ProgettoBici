@@ -15,7 +15,7 @@ class SessionController
         $stm->execute();
         $stm = $stm->fetch(PDO::FETCH_ASSOC);
         if ($stm['id_utente'] != null) {
-            $_SESSION['id_utente'] = $stm['id_utente'];
+            $_SESSION['Utente'] = new Utente($stm['id_utente']);
             $response->getBody()->write(json_encode(array("id_utente" => $stm['id_utente']), JSON_PRETTY_PRINT));
             $response->withHeader("Content-type", "application/json");
         }
@@ -31,7 +31,11 @@ class SessionController
 
     public function logout(Request $request, Response $response, $args)
     {
-        $response->getBody()->write('{"route": "logout"}');
-        return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        session_destroy();
+        if (isset($_COOKIE['PHPSESSID'])) {
+            unset($_COOKIE['PHPSESSID']);
+            setcookie('PHPSESSID', '', time() - 3600, '/');
+        }
+        return $response->withStatus(200);
     }
 }

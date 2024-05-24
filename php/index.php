@@ -14,7 +14,7 @@ require __DIR__ . '/vendor/autoload.php';
 //autoloader
 function autoloader($class_name)
 {
-    $directories = ['', '/controllers', '/views', '/templates', '/src', '/config'];
+    $directories = ['', '/controllers', '/views', '/templates', '/src', '/src/dbClass', '/config'];
     foreach ($directories as $dir) {
         $file = __DIR__ . $dir . '/' . $class_name . '.php';
         if (file_exists($file)) {
@@ -70,7 +70,14 @@ $app->group('/signin', function (RouteCollectorProxy $group) {
 });
 
 $app->group('/logout', function (RouteCollectorProxy $group) {
-    $group->get('', "SessionController:logout");
+    $group->post('', "SessionController:logout");
+    $group->options('', function ($request, $response, $args){
+        return $response;
+    });
+});
+
+$app->group('/user', function (RouteCollectorProxy $group) {
+    $group->get('/{id}', "UserController:userInfo");
     $group->options('', function ($request, $response, $args){
         return $response;
     });

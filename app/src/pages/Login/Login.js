@@ -38,7 +38,7 @@ export default function Login() {
       {localStorage.getItem("id_utente") != null && (
         <Navigate to="/" replace={true} />
       )}
-      <Container className="position-absolute top-50 start-50 translate-middle larghezza">
+      <div className="position-absolute top-50 start-50 translate-middle larghezza">
         <div className="background rounded p-1">
           <Card className="p-3">
             <Form onSubmit={login}>
@@ -78,7 +78,7 @@ export default function Login() {
             </Form>
           </Card>
         </div>
-      </Container>
+      </div>
     </div>
   );
 }

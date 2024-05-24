@@ -3,6 +3,7 @@ create table
     id_utente int (11) AUTO_INCREMENT NOT NULL, -- pk
     nome varchar(20) NOT NULL,
     cognome varchar(20) NOT NULL,
+    nascita date NOT NULL,
     email varchar(40) NOT NULL,
     psw varchar(64) NOT NULL,
     PRIMARY KEY (id_utente)
@@ -12,7 +13,8 @@ create table
   Gare (
     id_gara int auto_increment, -- pk
     nome varchar(40) not null,
-    maxConcorrenti int not null default -1, -- (-1 = disattivato)
+    maxConcorrenti int default -1, -- (-1 = disattivato)
+    minEta int default -1, -- (-1 = disattivato)
     chiusa boolean not null default false,
     primary key (id_gara)
   );
@@ -36,27 +38,29 @@ create table
   );
 
 insert into
-  Utenti (nome, cognome, email, psw)
+  Utenti (nome, cognome, nascita, email, psw)
 values
   (
     'Tizio',
     'Brutto',
+    '2020-01-01',
     '1@gmail.com',
     SHA2 ('1234', 256)
   ),
   (
     'Tizia',
     'Brutta',
+    '1950-01-01',
     '2@gmail.com',
     SHA2 ('4321', 256)
   );
 
 insert into
-  Gare (nome, maxConcorrenti)
+  Gare (nome, minEta, maxConcorrenti)
 values
-  ("Gara Lunghissima", 275),
-  ("Gara Media", 25),
-  ("Gara Corta", 57);
+  ("Gara Lunghissima", 10, 275),
+  ("Gara Media", -1, 25),
+  ("Gara Corta", 50, 57);
 
 insert into
   Organizzatori (id_gara, id_utente)

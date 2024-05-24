@@ -1,12 +1,3 @@
-.background {
-  /*
-    * Created with https://www.css-gradient.com
-    * Gradient link: https://www.css-gradient.com/?c1=6875ad&c2=ac5b42&gt=l&gd=dtl
-    */
-  background: #6875ad;
-  background: linear-gradient(135deg, #6875ad, #ac5b42);
-}
-
 .larghezza{
   max-width: 450px;
 }

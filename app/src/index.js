@@ -7,6 +7,7 @@ import App from "./App"
 
 //bootstrap css
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css"
 
 //bootstrap dark mode
 document.body.setAttribute("data-bs-theme", "dark");
