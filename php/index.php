@@ -93,10 +93,14 @@ $app->group('/user', function (RouteCollectorProxy $group) {
 //GareController
 $app->group('/gare', function (RouteCollectorProxy $group) {
     $group->get('', "GaraController:gare");
+    $group->get('/user', "GaraController:gareDellUtente");
     $group->get('/{id}', "GaraController:gara");
 
     //preflight options
     $group->options('', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/user', function ($request, $response, $args) {
         return $response;
     });
     $group->options('/{id}', function ($request, $response, $args) {

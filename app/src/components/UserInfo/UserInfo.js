@@ -18,7 +18,7 @@ export default function UserInfo() {
     const data = {
       nome: json["nome"],
       cognome: json["cognome"],
-      iscizioni: json["iscrizioni"].length,
+      iscrizioni: json["iscrizioni"].length,
       gareGestite: json["gareGestite"].length,
     };
     setUser(data);
@@ -31,7 +31,7 @@ export default function UserInfo() {
   return (
     <>
       <Row>
-        <Col sm={8} className="d-flex justify-content-start">
+        <Col sm={6} className="d-flex justify-content-start">
           <h3>
             Bentornato{" "}
             <span className="text-info">
@@ -39,7 +39,7 @@ export default function UserInfo() {
             </span>
           </h3>
         </Col>
-        <Col sm={4} className="d-flex justify-content-end p-2">
+        <Col sm={6} className="d-flex justify-content-end p-2">
           <Table>
             <thead>
               <tr>
@@ -49,14 +49,26 @@ export default function UserInfo() {
             <tbody>
               <tr>
                 <td>
-                  Sei iscritto a {user.iscizioni}{" "}
-                  {user.iscizioni > 1 ? "gare" : "gara"}
+                  {user.iscrizioni == 0 ? (
+                    "Non sei iscrittto a nessuna gara"
+                  ) : (
+                    <>
+                      Sei iscritto a {user.iscrizioni}{" "}
+                      {user.iscrizioni > 1 ? "gare" : "gara"}
+                    </>
+                  )}
                 </td>
               </tr>
               <tr>
                 <td>
-                  Sei moderatore di {user.gareGestite}{" "}
-                  {user.gareGestite > 1 ? "gare" : "gara"}
+                  {user.gareGestite == 0 ? (
+                    "Non sei iscrittto a nessuna gara"
+                  ) : (
+                    <>
+                      Sei moderatore di {user.gareGestite}{" "}
+                      {user.gareGestite > 1 ? "gare" : "gara"}
+                    </>
+                  )}
                 </td>
               </tr>
             </tbody>
