@@ -50,38 +50,56 @@ $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 //routes
-$app->group('/', function (RouteCollectorProxy $group) {
+//StatusController
+$app->group('/status', function (RouteCollectorProxy $group) {
     $group->get('', "StatusController:status");
     $group->options('', function ($request, $response, $args) {
         return $response;
     });
 });
 
-$app->group('/login', function (RouteCollectorProxy $group) {
-    $group->post('', 'SessionController:login');
-    $group->options('', function ($request, $response, $args) {
+//SessionController
+$app->group('/session', function (RouteCollectorProxy $group) {
+    $group->post('/login', 'SessionController:login');
+    $group->post('/signin', "SessionController:signin");
+    $group->post('/logout', "SessionController:logout");
+
+    //preflight options
+    $group->options('/login', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/signin', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/logout', function ($request, $response, $args) {
         return $response;
     });
 });
 
-$app->group('/signin', function (RouteCollectorProxy $group) {
-    $group->post('', "SessionController:signin");
-    $group->options('', function ($request, $response, $args) {
-        return $response;
-    });
-});
-
-$app->group('/logout', function (RouteCollectorProxy $group) {
-    $group->post('', "SessionController:logout");
-    $group->options('', function ($request, $response, $args) {
-        return $response;
-    });
-});
-
+//UserController
 $app->group('/user', function (RouteCollectorProxy $group) {
     $group->get('', "UserController:userInfo");
     $group->get('/{id}', "UserController:userInfoByID");
+
+    //preflight options
     $group->options('', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/{id}', function ($request, $response, $args) {
+        return $response;
+    });
+});
+
+//GareController
+$app->group('/gare', function (RouteCollectorProxy $group) {
+    $group->get('', "GaraController:gare");
+    $group->get('/{id}', "GaraController:gara");
+
+    //preflight options
+    $group->options('', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/{id}', function ($request, $response, $args) {
         return $response;
     });
 });

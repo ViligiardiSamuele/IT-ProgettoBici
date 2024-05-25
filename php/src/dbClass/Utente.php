@@ -25,12 +25,12 @@ class Utente implements JsonSerializable
             from Utenti
             where id_utente = :id_utente
         ");
-        $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_STR);
+        $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_INT);
         $stm->execute();
         $stm = $stm->fetch(PDO::FETCH_ASSOC);
         $this->nome = $stm['nome'];
         $this->cognome = $stm['cognome'];
-        $this->nascita = $stm['nascita'];
+        $this->nascita = new DateTime($stm['nascita']);
         $this->email = $stm['email'];
 
         //Iscrizioni
@@ -39,7 +39,7 @@ class Utente implements JsonSerializable
             from Concorrenti
             where id_utente = :id_utente
         ");
-        $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_STR);
+        $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_INT);
         $stm->execute();
         $stm = $stm->fetchAll(PDO::FETCH_ASSOC);
         foreach ($stm as $array) {
@@ -62,6 +62,13 @@ class Utente implements JsonSerializable
                 array_push($this->gareGestite, (int) $value);
             }
         }
+    }
+
+    function verificaEtaMinima($etaMinima)
+    {
+        $oggi = new DateTime();
+        $eta = $oggi->diff($this->nascita)->y;
+        return $eta >= $etaMinima;
     }
 
     function getId_utente()

@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import UserInfo from "../../components/UserInfo/UserInfo.js";
+import GarePubblicate from "../../components/GarePubblicate/GarePubblicate.js";
 
 export default function Home() {
   return (
@@ -18,9 +19,9 @@ export default function Home() {
             </Col>
           </Row>
           <Row>
-            <Col sm={6} className="p-2 ">
+            <Col sm={12} className="p-2 ">
               <Card className="p-2 shadow-lg rounded">
-                <>Lista Gare</>
+                <GarePubblicate />
               </Card>
             </Col>
           </Row>
