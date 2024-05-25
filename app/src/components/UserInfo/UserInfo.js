@@ -8,22 +8,22 @@ export default function UserInfo() {
   const [user, setUser] = useState("");
 
   async function loadUserInfo() {
-    const request = {
-      method: "GET",
-    };
+    if (user == "") {
+      const request = {
+        method: "GET",
+        credentials: "include",
+      };
 
-    const response = await fetch(
-      `http://localhost:8080/user`,
-      request
-    );
-    const json = await response.json();
-    const data = {
-      nome: json['nome'],
-      cognome: json['cognome'],
-      iscizioni: json['iscrizioni'].length,
-      gareGestite: json['gareGestite'].length,
+      const response = await fetch(`http://localhost:8080/user`, request);
+      const json = await response.json();
+      const data = {
+        nome: json["nome"],
+        cognome: json["cognome"],
+        iscizioni: json["iscrizioni"].length,
+        gareGestite: json["gareGestite"].length,
+      };
+      setUser(data);
     }
-    setUser(data);
   }
 
   useEffect(() => {
@@ -56,7 +56,10 @@ export default function UserInfo() {
                 </td>
               </tr>
               <tr>
-                <td>Moderatore di: {user.gareGestite} {user.gareGestite > 1 ? "gare" : "gara"}</td>
+                <td>
+                  Moderatore di: {user.gareGestite}{" "}
+                  {user.gareGestite > 1 ? "gare" : "gara"}
+                </td>
               </tr>
             </tbody>
           </Table>

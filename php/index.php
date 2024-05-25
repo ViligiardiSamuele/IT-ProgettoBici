@@ -11,6 +11,7 @@ use Slim\Routing\RouteContext;
 
 require __DIR__ . '/vendor/autoload.php';
 
+
 //autoloader
 function autoloader($class_name)
 {
@@ -49,7 +50,12 @@ $app->addRoutingMiddleware();
 $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 //routes
-$app->get('/', "StatusController:status");
+$app->group('/', function (RouteCollectorProxy $group) {
+    $group->get('', "StatusController:status");
+    $group->options('', function ($request, $response, $args) {
+        return $response;
+    });
+});
 
 $app->group('/login', function (RouteCollectorProxy $group) {
     $group->post('', 'SessionController:login');
