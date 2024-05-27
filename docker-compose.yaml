@@ -29,7 +29,7 @@ services:
       - "./mysql:/var/lib/mysql"
       - "./build/init.sql:/docker-entrypoint-initdb.d/init.sql"
     ports:
-      - "3306:3306"
+      - 3306:3306
 
   phpMyAdmin:
     container_name: phpmyadmin

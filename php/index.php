@@ -96,7 +96,7 @@ $app->group('/gare', function (RouteCollectorProxy $group) {
     $group->get('/aperte', "GaraController:gareAperte");
     $group->get('/user', "GaraController:gareDellUtente");
     $group->get('/utenteNonIscritto', "GaraController:utenteNonIscritto");
-    $group->get('/iscriviUtente/{id}', "GaraController:iscriviUtente");
+    $group->post('/iscriviUtente/{id}', "GaraController:iscriviUtente");
     $group->get('/{id}', "GaraController:gara");
 
     //preflight options

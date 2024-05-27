@@ -116,8 +116,56 @@ class GaraController
         if (!isset($_SESSION["id_utente"]))
             return $response->withStatus(401); //session expired
 
-        
-
-        return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        //Controllo esistenza gara
+        $stm = Database::getInstance()->prepare("
+                select nome from Gare where id_gara = :id_gara
+        ");
+        $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+        $stm->execute();
+        if ($stm->rowCount() > 0) {
+            //Controllo iscrizione già avvenuta
+            $stm = Database::getInstance()->prepare("
+                select *
+                from Concorrenti
+                where id_gara = :id_gara and id_utente = :id_utente
+            ");
+            $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+            $stm->bindParam(":id_utente", $_SESSION['id_utente'], PDO::PARAM_INT);
+            $stm->execute();
+            if ($stm->rowCount() == 0) {
+                $gara = new Gara($args["id"]);
+                $oggi = new DateTime();
+                $utente = new Utente($_SESSION['id_utente']);
+                if ($oggi->diff($utente->getNascita())->y >= $gara->getMinEta()) {
+                    $stm = Database::getInstance()->prepare("
+                        INSERT INTO Concorrenti (id_gara, id_utente)
+                        VALUES (:id_gara, :id_utente)
+                    ");
+                    $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+                    $stm->bindParam(":id_utente", $_SESSION['id_utente'], PDO::PARAM_INT);
+                    $stm->execute();
+                    if ($stm) {
+                        $response->getBody()->write(json_encode([
+                            "msg" => "Iscrizione avvenuta con successo"
+                        ], JSON_PRETTY_PRINT));
+                        return $response->withHeader("Content-type", "application/json")->withStatus(200);
+                    } else {
+                        $response->getBody()->write(json_encode([
+                            "msg" => "Errore nell'inserimento della registrazione"
+                        ], JSON_PRETTY_PRINT));
+                        return $response->withHeader("Content-type", "application/json")->withStatus(500);
+                    }
+                }
+                $response->getBody()->write(json_encode([
+                    "msg" => "La gara scelta richiede un' età minima di " . $gara->getMinEta()
+                ], JSON_PRETTY_PRINT));
+                return $response->withHeader("Content-type", "application/json")->withStatus(400);
+            }
+            return $response->withHeader("Content-type", "application/json")->withStatus(200);
+        }
+        $response->getBody()->write(json_encode([
+            "msg" => "La gara (ID: " . $args['id'] . ") non esiste: Controlla di aver inserito correttamente l'ID"
+        ], JSON_PRETTY_PRINT));
+        return $response->withHeader("Content-type", "application/json")->withStatus(400);
     }
 }

@@ -28,13 +28,18 @@ export default function NavbarTop() {
     <>
       <Navbar expand="lg" className="bg-body-tertiary m-2 rounded">
         <Container fluid>
+          <Navbar className="bg-body-tertiary">
+            <Container>
+              <Navbar.Brand>
+                <i class="bi bi-bicycle"></i>
+              </Navbar.Brand>
+            </Container>
+          </Navbar>
           <Navbar.Brand>IT-Progettobici</Navbar.Brand>
+
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
-            <Nav
-              className="me-auto my-2 my-lg-0"
-              navbarScroll
-            >
+            <Nav className="me-auto my-2 my-lg-0" navbarScroll>
               <Link to={"/"} className="nav-link">
                 <i className="bi bi-house"></i> Home
               </Link>
@@ -46,17 +51,17 @@ export default function NavbarTop() {
               </Link>
             </Nav>
             <Navbar.Text>
-            {localStorage.getItem("id_utente") == null ? (
-              <Link to="/login">
-                <Button>Login</Button>
-              </Link>
-            ) : (
-              <Button onClick={logout}>
-                {" "}
-                <i className="bi bi-box-arrow-right"></i> Logout
-              </Button>
-            )}
-          </Navbar.Text>
+              {localStorage.getItem("id_utente") == null ? (
+                <Link to="/login">
+                  <Button>Login</Button>
+                </Link>
+              ) : (
+                <Button onClick={logout}>
+                  {" "}
+                  <i className="bi bi-box-arrow-right"></i> Logout
+                </Button>
+              )}
+            </Navbar.Text>
           </Navbar.Collapse>
         </Container>
       </Navbar>
