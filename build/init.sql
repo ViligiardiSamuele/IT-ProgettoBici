@@ -45,7 +45,7 @@ values
     'Brutto',
     '2020-01-01',
     '1@gmail.com',
-    SHA2 ('TestPiùCurato435311231###@#@@#@+è+[][+è+è+è+èsadased3]', 256)
+    SHA2 ('1234', 256)
   ),
   (
     'Tizia',

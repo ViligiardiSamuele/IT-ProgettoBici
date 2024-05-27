@@ -9,7 +9,7 @@ import { Navigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("1@gmail.com");
-  const [password, setPassword] = useState("TestPiùCurato435311231###@#@@#@+è+[][+è+è+è+èsadased3]");
+  const [password, setPassword] = useState("1234");
 
   async function login(event) {
     event.preventDefault();
@@ -26,7 +26,6 @@ export default function Login() {
         `http://localhost:8080/session/login`,
         request
       );
-      if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       localStorage.setItem("id_utente", data.id_utente);
     } catch (error) {

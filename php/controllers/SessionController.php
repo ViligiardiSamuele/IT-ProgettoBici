@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 use Psr\Http\Message\ResponseInterface as Response;
