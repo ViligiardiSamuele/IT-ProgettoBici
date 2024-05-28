@@ -2,7 +2,7 @@ import "./ListaGare.css";
 import Accordion from "react-bootstrap/Accordion";
 import ListGroup from "react-bootstrap/ListGroup";
 
-export default function UserInfo({ gare }) {
+export default function ListaGare({ gare }) {
   return (
     <>
       <Accordion>

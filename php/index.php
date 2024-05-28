@@ -94,8 +94,10 @@ $app->group('/user', function (RouteCollectorProxy $group) {
 $app->group('/gare', function (RouteCollectorProxy $group) {
     $group->get('', "GaraController:gare");
     $group->get('/aperte', "GaraController:gareAperte");
-    $group->get('/user', "GaraController:gareDellUtente");
+    $group->get('/user', "GaraController:gareIscritto");
+    $group->get('/gestite', "GaraController:gareDellUtente");
     $group->get('/utenteNonIscritto', "GaraController:utenteNonIscritto");
+    $group->post('/crea', "GaraController:creaGara");
     $group->post('/iscriviUtente/{id}', "GaraController:iscriviUtente");
     $group->get('/{id}', "GaraController:gara");
 
@@ -109,7 +111,13 @@ $app->group('/gare', function (RouteCollectorProxy $group) {
     $group->options('/user', function ($request, $response, $args) {
         return $response;
     });
+    $group->options('/gestite', function ($request, $response, $args) {
+        return $response;
+    });
     $group->options('/utenteNonIscritto', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/crea', function ($request, $response, $args) {
         return $response;
     });
     $group->options('/iscriviUtente/{id}', function ($request, $response, $args) {

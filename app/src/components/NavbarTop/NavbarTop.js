@@ -50,6 +50,9 @@ export default function NavbarTop() {
               <Link to={"/iscrizioni"} className="nav-link">
                 Iscrizioni
               </Link>
+              <Link to={"/gareCreate"} className="nav-link">
+                Gare Create
+              </Link>
             </Nav>
             <Navbar.Text>
               {localStorage.getItem("id_utente") == null ? (

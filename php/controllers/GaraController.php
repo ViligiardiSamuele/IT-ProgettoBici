@@ -60,7 +60,7 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(200);
     }
 
-    public function gareDellUtente(Request $request, Response $response, $args)
+    public function gareIscritto(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
             return $response->withStatus(401); //session expired
@@ -120,7 +120,7 @@ class GaraController
         $stm = Database::getInstance()->prepare("
                 select nome from Gare where id_gara = :id_gara
         ");
-        $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);   
+        $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
         $stm->execute();
         if ($stm->rowCount() > 0) {
             //Controllo iscrizione già avvenuta
@@ -170,5 +170,59 @@ class GaraController
             "msg" => "La gara (ID: " . $args['id'] . ") non esiste: Controlla di aver inserito correttamente l'ID"
         ], JSON_PRETTY_PRINT));
         return $response->withHeader("Content-type", "application/json")->withStatus(400);
+    }
+
+    public function gareDellUtente(Request $request, Response $response, $args)
+    {
+        if (!isset($_SESSION["id_utente"]))
+            return $response->withStatus(401); //session expired
+        $stm = Database::getInstance()->prepare("
+            select id_gara
+            from Organizzatori
+            where id_utente = :id_utente
+        ");
+        $stm->bindParam(":id_utente", $_SESSION['id_utente'], PDO::PARAM_INT);
+        $stm->execute();
+        if ($stm) {
+            if ($stm->rowCount() > 0) {
+                $id_gare = $stm->fetchAll(PDO::FETCH_ASSOC);
+                $gare = [];
+                foreach ($id_gare as $key => $value) {
+                    array_push($gare, new Gara($value['id_gara']));
+                }
+                $response->getBody()->write(json_encode($gare));
+                return $response->withHeader("Content-type", "application/json")->withStatus(200);
+            } else {
+                $response->getBody()->write(json_encode(["msg" => "Non sei moderatore di nessuna gara"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(400);
+            }
+        }
+        $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database"]));
+        return $response->withHeader("Content-type", "application/json")->withStatus(500);
+    }
+
+    public function creaGara(Request $request, Response $response, $args)
+    {
+        if (!isset($_SESSION["id_utente"]))
+            return $response->withStatus(401); //session expired
+        $datiNuovaGara = json_decode($request->getBody()->getContents(), true);
+
+        $stm = Database::getInstance()->prepare("
+            select id_gara
+            from Gare
+            where nome = :nome
+        ");
+        $stm->bindParam(":nome", $datiNuovaGara['nome'], PDO::PARAM_STR);
+        $stm->execute();
+        if ($stm) {
+            if ($stm->rowCount() > 0) {
+                
+            } else {
+                $response->getBody()->write(json_encode(["msg" => "Esiste già una gara con lo stesso nome"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(400);
+            }
+        }
+        $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database"]));
+        return $response->withHeader("Content-type", "application/json")->withStatus(500);
     }
 }
