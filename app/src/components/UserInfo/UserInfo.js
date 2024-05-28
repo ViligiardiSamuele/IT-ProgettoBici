@@ -3,6 +3,7 @@ import "./UserInfo.css";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import Table from "react-bootstrap/Table";
+import { redirect } from "react-router-dom";
 
 export default function UserInfo() {
   const [user, setUser] = useState("");
@@ -14,6 +15,7 @@ export default function UserInfo() {
     };
 
     const response = await fetch(`http://localhost:8080/user`, request);
+    if (response.status == 401) window.location = '/login';
     const json = await response.json();
     const data = {
       nome: json["nome"],

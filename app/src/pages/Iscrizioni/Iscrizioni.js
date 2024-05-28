@@ -6,7 +6,6 @@ import NavbarTop from "../../components/NavbarTop/NavbarTop";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { redirect } from "react-router-dom";
 
 export default function Iscrizioni() {
   const [gareIscritto, setGareIscritto] = useState([]);
@@ -20,7 +19,7 @@ export default function Iscrizioni() {
     };
 
     const response = await fetch(`http://localhost:8080/gare/user`, request);
-    if (response.status == 401) return redirect("/login");
+    if (response.status == 401) window.location = '/login';
     const json = await response.json();
     if (json.length > 0) setEmpty(false);
     else setEmpty(true);

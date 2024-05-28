@@ -56,9 +56,14 @@ export default function NavbarTop() {
             </Nav>
             <Navbar.Text>
               {localStorage.getItem("id_utente") == null ? (
-                <Link to="/login">
-                  <Button>Login</Button>
-                </Link>
+                <>
+                  <Link to="/signin">
+                    <Button variant="success" className=" me-1">Registrati</Button>
+                  </Link>
+                  <Link to="/login">
+                    <Button>Accedi</Button>
+                  </Link>
+                </>
               ) : (
                 <Button onClick={logout}>
                   {" "}

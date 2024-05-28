@@ -28,17 +28,14 @@ export default function Login() {
       );
       const data = await response.json();
       localStorage.setItem("id_utente", data.id_utente);
+      window.location = '/';
     } catch (error) {
       console.error("Errore durante il login:", error);
     }
-    window.location.reload();
   }
 
   return (
     <div className="App">
-      {localStorage.getItem("id_utente") != null && (
-        <Navigate to="/" replace={true} />
-      )}
       <div className="position-absolute top-50 start-50 translate-middle w-100" style={{"maxWidth":450}}>
         <div className="background rounded p-1">
           <Card className="p-3">
@@ -71,6 +68,11 @@ export default function Login() {
                 Accedi
               </Button>
 
+              <Link to="/signin">
+                <Button variant="success" className="ms-2">
+                  Registrati
+                </Button>
+              </Link>
               <Link to="/">
                 <Button variant="secondary" className="ms-2">
                   Indietro

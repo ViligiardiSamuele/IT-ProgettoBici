@@ -41,7 +41,7 @@ export default function FormIscrizione({ gare }) {
               setGara(e.target.value);
             }}
           >
-            <option selected value="0" key="0">
+            <option defaultValue value="0" key="0">
               Seleziona una gara
             </option>
             {gare.map((gara) => (
