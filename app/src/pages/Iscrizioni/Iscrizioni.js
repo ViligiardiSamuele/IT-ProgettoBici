@@ -39,21 +39,29 @@ export default function Iscrizioni() {
     <div className="App">
       <NavbarTop />
       <div className="mx-auto mt-5 p-2" style={{ maxWidth: 800 }}>
-        <Row>
-          <Col sm={6}>
-            <h2>Le tue iscrizioni</h2>
-            {!empty ? (
-              <ListaGare gare={gareIscritto} />
-            ) : (
-              <Card className="text-center p-1">
-                Non sei iscritto a nessuna gara
-              </Card>
-            )}
-          </Col>
-          <Col sm={6}>
-            <FormIscrizione gare={gareAperte} />
-          </Col>
-        </Row>
+        {localStorage.getItem("id_utente") != null ? (
+          <Row>
+            <Col sm={6}>
+              <h2>Le tue iscrizioni</h2>
+              {!empty ? (
+                <ListaGare gare={gareIscritto} />
+              ) : (
+                <Card className="text-center p-1">
+                  Non sei iscritto a nessuna gara
+                </Card>
+              )}
+            </Col>
+            <Col sm={6}>
+              <FormIscrizione gare={gareAperte} />
+            </Col>
+          </Row>
+        ) : (
+          <Card className="m-5 p-5">
+            <h1 className="text-center">
+              Accedi per visualizzare le tue iscrizioni
+            </h1>
+          </Card>
+        )}
       </div>
     </div>
   );

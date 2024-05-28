@@ -4,6 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
+import { redirect } from "react-router-dom";
 
 async function logout() {
   const request = {
@@ -31,7 +32,7 @@ export default function NavbarTop() {
           <Navbar className="bg-body-tertiary">
             <Container>
               <Navbar.Brand>
-                <i class="bi bi-bicycle"></i>
+                <i className="bi bi-bicycle"></i>
               </Navbar.Brand>
             </Container>
           </Navbar>

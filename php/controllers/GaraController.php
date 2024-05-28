@@ -120,7 +120,7 @@ class GaraController
         $stm = Database::getInstance()->prepare("
                 select nome from Gare where id_gara = :id_gara
         ");
-        $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+        $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);   
         $stm->execute();
         if ($stm->rowCount() > 0) {
             //Controllo iscrizione già avvenuta
@@ -157,11 +157,14 @@ class GaraController
                     }
                 }
                 $response->getBody()->write(json_encode([
-                    "msg" => "La gara scelta richiede un' età minima di " . $gara->getMinEta()
+                    "msg" => "La gara scelta richiede un' età minima di " . $gara->getMinEta() . " anni"
                 ], JSON_PRETTY_PRINT));
                 return $response->withHeader("Content-type", "application/json")->withStatus(400);
             }
-            return $response->withHeader("Content-type", "application/json")->withStatus(200);
+            $response->getBody()->write(json_encode([
+                "msg" => "Sei già iscritto a questa gara"
+            ], JSON_PRETTY_PRINT));
+            return $response->withHeader("Content-type", "application/json")->withStatus(400);
         }
         $response->getBody()->write(json_encode([
             "msg" => "La gara (ID: " . $args['id'] . ") non esiste: Controlla di aver inserito correttamente l'ID"
