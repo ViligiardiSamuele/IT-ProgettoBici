@@ -8,9 +8,9 @@ import Button from "react-bootstrap/esm/Button";
 
 export default function FormCreazioneGara() {
   const [nome, setNome] = useState("");
-  const [maxConcorrenti, setMaxConcorrenti] = useState();
-  const [minEta, setMinEta] = useState();
-  const [chiusa, setChiusa] = useState(true);
+  const [maxConcorrenti, setMaxConcorrenti] = useState(-1);
+  const [minEta, setMinEta] = useState(-1);
+  const [aperta, setAperta] = useState(true);
 
   const [hideControlMaxConcorrenti, setHideControlMaxConcorrenti] =
     useState(true);
@@ -34,16 +34,13 @@ export default function FormCreazioneGara() {
           enable: !hideControlMinEta,
           value: minEta,
         },
-        chiusa: chiusa,
+        aperta: aperta,
       }),
     };
 
-    const response = await fetch(
-      `http://localhost:8080/gare/crea`,
-      request
-    );
+    const response = await fetch(`http://localhost:8080/gare/crea`, request);
     const data = await response.json();
-    if (response.status == 401) window.location = '/login';
+    if (response.status == 401) window.location = "/login";
     setMsg(data["msg"]);
   }
 
@@ -101,12 +98,12 @@ export default function FormCreazioneGara() {
           />
           <Form.Check
             type="checkbox"
-            label={chiusa ? "Aperta" : "Chiusa"}
-            checked={chiusa}
+            label={aperta ? "Aperta" : "Chiusa"}
+            checked={aperta}
             className="mt-2"
-            value={chiusa}
+            value={aperta}
             onChange={(e) => {
-              setChiusa(!chiusa);
+              setAperta(!aperta);
             }}
           />
           <Button type="submit" className="mt-2">

@@ -16,7 +16,8 @@ export default function ListaGare({ gare, mostraOpzioni = false }) {
             <Accordion.Body>
               <ListGroup>
                 <ListGroup.Item>
-                  Concorrenti: {gara.concorrenti.length}/{gara.maxConcorrenti}
+                  Concorrenti: {gara.concorrenti.length}
+                  {gara.maxConcorrenti > 0 && "/" + gara.maxConcorrenti + ""}
                 </ListGroup.Item>
                 <ListGroup.Item>
                   Età minima: {gara.minEta == -1 ? "No" : gara.minEta + " anni"}
