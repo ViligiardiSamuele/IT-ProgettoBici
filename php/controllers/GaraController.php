@@ -203,10 +203,10 @@ class GaraController
 
     public function creaGara(Request $request, Response $response, $args)
     {
-        if (!isset($_SESSION["id_utente"]))
-            return $response->withStatus(401); //session expired
+        //if (!isset($_SESSION["id_utente"]))
+        //      return $response->withStatus(401); //session expired
         $datiNuovaGara = json_decode($request->getBody()->getContents(), true);
-
+        var_dump($datiNuovaGara);
         $stm = Database::getInstance()->prepare("
             select id_gara
             from Gare
@@ -214,9 +214,41 @@ class GaraController
         ");
         $stm->bindParam(":nome", $datiNuovaGara['nome'], PDO::PARAM_STR);
         $stm->execute();
+        var_dump($stm);
         if ($stm) {
-            if ($stm->rowCount() > 0) {
+            if ($stm->rowCount() == 0) {
+
+                //Inserimento in Gare
+                $stm = Database::getInstance()->prepare("
+                    INSERT INTO Gare (nome, maxConcorrenti, minEta, chiusa)
+                    values (:nome, :maxConcorrenti, :minEta, :chiusa);
+                ");
+                $stm->bindParam(":nome", $datiNuovaGara['nome'], PDO::PARAM_STR);
+                if ($datiNuovaGara['maxConcorrenti']['enable']) {
+                    $stm->bindParam(":maxConcorrenti", $datiNuovaGara['maxConcorrenti']['value'], PDO::PARAM_INT);
+                } else {
+                    $stm->bindParam(":maxConcorrenti", "-1", PDO::PARAM_INT);
+                }
+                if ($datiNuovaGara['minEta']['enable']) {
+                    $stm->bindParam(":minEta", $datiNuovaGara['minEta']['value'], PDO::PARAM_INT);
+                } else {
+                    $stm->bindParam(":minEta", "-1", PDO::PARAM_INT);
+                }
+                $stm->bindParam(":chiusa", $datiNuovaGara['chiusa'], PDO::PARAM_BOOL);
+                $stm->execute();
+
+
+                //Inserimento organizzatore in Organizzatori
+                $stm = Database::getInstance()->prepare("
+                    INSERT INTO Organizzatori (id_gara, id_utente)
+                    values (:id_utente, :id_utente);
+                ");
+                $stm->bindParam(":id_utente", $id_gara, PDO::PARAM_BOOL);
+                $stm->bindParam(":id_utente", $_SESSION['id_utente'], PDO::PARAM_BOOL);
                 
+                
+                $response->getBody()->write(json_encode(["msg" => "Gara inserita correttamente"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(200);
             } else {
                 $response->getBody()->write(json_encode(["msg" => "Esiste già una gara con lo stesso nome"]));
                 return $response->withHeader("Content-type", "application/json")->withStatus(400);

@@ -39,11 +39,11 @@ export default function FormCreazioneGara() {
     };
 
     const response = await fetch(
-      `http://localhost:8080/gare/creaGara`,
+      `http://localhost:8080/gare/crea`,
       request
     );
     const data = await response.json();
-    if (response.status == 401) return redirect("/login");
+    if (response.status == 401) window.location = '/login';
     setMsg(data["msg"]);
   }
 
@@ -110,7 +110,7 @@ export default function FormCreazioneGara() {
             }}
           />
           <Button type="submit" className="mt-2">
-            Iscriviti
+            Crea gara
           </Button>
         </Form>
         {msg != "" && (

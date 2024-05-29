@@ -1,8 +1,10 @@
 import "./ListaGare.css";
 import Accordion from "react-bootstrap/Accordion";
 import ListGroup from "react-bootstrap/ListGroup";
+import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-export default function ListaGare({ gare }) {
+export default function ListaGare({ gare, mostraOpzioni = false }) {
   return (
     <>
       <Accordion>
@@ -25,6 +27,13 @@ export default function ListaGare({ gare }) {
                 <ListGroup.Item>
                   Organizzatori: {gara.organizzatori.length}
                 </ListGroup.Item>
+                {mostraOpzioni && (
+                  <ListGroup.Item>
+                    <ButtonGroup aria-label="Basic example">
+                      <Button variant="primary">Modifica</Button>
+                    </ButtonGroup>
+                  </ListGroup.Item>
+                )}
               </ListGroup>
             </Accordion.Body>
           </Accordion.Item>

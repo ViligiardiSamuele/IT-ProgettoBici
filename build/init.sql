@@ -3,7 +3,7 @@ create table
     id_utente int (11) AUTO_INCREMENT NOT NULL, -- pk
     nome varchar(20) NOT NULL,
     cognome varchar(20) NOT NULL,
-    nascita date NOT NULL,
+    nascita char(10) NOT NULL,
     email varchar(40) NOT NULL,
     psw varchar(64) NOT NULL,
     PRIMARY KEY (id_utente)

@@ -46,7 +46,10 @@ class SessionController
                 $stm->execute();
                 $stm = $stm->fetch(PDO::FETCH_ASSOC);
                 $_SESSION['id_utente'] = $stm["id_utente"];
-                $response->getBody()->write('{"msg": "Registrazione avvenuta con successo"}');
+                $response->getBody()->write(json_encode([
+                    "id_utente" => $stm['id_utente'],
+                    "msg" => "Registrazione avvenuta con successo"
+                ]));
                 return $response->withHeader("Content-type", "application/json")->withStatus(200);
             } else {
                 $response->getBody()->write('{"msg": "Errore nella comunicazione con il database"}');

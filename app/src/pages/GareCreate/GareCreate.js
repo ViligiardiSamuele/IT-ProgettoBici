@@ -39,7 +39,7 @@ export default function GareUtente() {
             <Col sm={6}>
               <h2>Le tue gare</h2>
               {!gareCreate.lenght != 0 ? (
-                <ListaGare gare={gareCreate} />
+                <ListaGare gare={gareCreate} mostraOpzioni={true} />
               ) : (
                 <Card className="text-center p-1">
                   Non sei moderatore di nessuna gara

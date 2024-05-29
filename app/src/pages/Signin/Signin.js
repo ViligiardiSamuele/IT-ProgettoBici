@@ -35,25 +35,29 @@ export default function Signin() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: email,
-        password: password,
+        cognome: cognome,
+        nome: nome,
         nascita: nascita,
-        email: email,
         password: password,
       }),
       credentials: "include",
     };
-
-    const response = await fetch(
-      `http://localhost:8080/session/signin`,
-      request
-    );
-    const data = await response.json();
-    if (!response.ok && response.status != 200) {
-      setMsg(data['msg']);
-      return;
+    try {
+      const response = await fetch(
+        `http://localhost:8080/session/signin`,
+        request
+      );
+      const data = await response.json();
+      if (!response.ok && response.status != 200) {
+        setMsg(data["msg"]);
+        return;
+      }
+      localStorage.setItem("id_utente", data["id_utente"]);
+      window.location = "/";
+    } catch (error) {
+      setMsg("Errore nella connessione al server");
+      console.error("Fetch error:", error);
     }
-    localStorage.setItem("id_utente", data.id_utente);
-    window.location = "/";
   }
 
   return (
@@ -107,6 +111,7 @@ export default function Signin() {
                   value={nascita}
                   onChange={(e) => {
                     setNascita(e.target.value);
+                    console.log(nascita);
                   }}
                   style={{ maxWidth: 150 }}
                   min="1900-01-01"
