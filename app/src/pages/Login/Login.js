@@ -5,14 +5,18 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import Alert from "react-bootstrap/Alert";
 
 export default function Login() {
   const [email, setEmail] = useState("1@gmail.com");
   const [password, setPassword] = useState("1234");
+  const [msg, setMsg] = useState("");
+  const [mostraPassword, setMostraPassword] = useState(true);
+  const [type, setType] = useState("password");
 
   async function login(event) {
     event.preventDefault();
+    setMsg("");
 
     const request = {
       method: "POST",
@@ -28,15 +32,19 @@ export default function Login() {
       );
       const data = await response.json();
       localStorage.setItem("id_utente", data.id_utente);
-      window.location = '/';
+      window.location = "/";
     } catch (error) {
       console.error("Errore durante il login:", error);
+      setMsg("Verifica di aver inserito correttamente email e password");
     }
   }
 
   return (
     <div className="App">
-      <div className="position-absolute top-50 start-50 translate-middle w-100" style={{"maxWidth":450}}>
+      <div
+        className="position-absolute top-50 start-50 translate-middle w-100"
+        style={{ maxWidth: 450 }}
+      >
         <div className="background rounded p-1">
           <Card className="p-3">
             <Form onSubmit={login}>
@@ -56,7 +64,7 @@ export default function Login() {
               <Form.Group className="mb-3">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
-                  type="password"
+                  type={type}
                   required
                   value={password}
                   onChange={(e) => {
@@ -64,6 +72,23 @@ export default function Login() {
                   }}
                 />
               </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  label="Mostra la Password"
+                  className="mt-2"
+                  onChange={() => {
+                    setMostraPassword(!mostraPassword);
+                    if (mostraPassword) setType("text");
+                    else setType("password");
+                  }}
+                />
+              </Form.Group>
+              {msg != "" && (
+                <Alert variant="warning" className="mt-2">
+                  <p>{msg}</p>
+                </Alert>
+              )}
               <Button variant="primary" type="submit">
                 Accedi
               </Button>

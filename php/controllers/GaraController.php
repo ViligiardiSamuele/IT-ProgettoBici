@@ -174,9 +174,8 @@ class GaraController
 
     public function gareDellUtente(Request $request, Response $response, $args)
     {
-        $id_utente = "1";
-        //if (!isset($_SESSION["id_utente"]))
-        //return $response->withStatus(401); //session expired
+        if (!isset($_SESSION["id_utente"]))
+            return $response->withStatus(401); //session expired
         $stm = Database::getInstance()->prepare("
             select id_gara
             from Organizzatori
@@ -201,70 +200,72 @@ class GaraController
         $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database"]));
         return $response->withHeader("Content-type", "application/json")->withStatus(500);
     }
-
     public function creaGara(Request $request, Response $response, $args)
     {
-        if (!isset($_SESSION["id_utente"]))
-            return $response->withStatus(401); //session expired
+        if (!isset($_SESSION["id_utente"])) {
+            return $response->withStatus(401); // session expired
+        }
+    
         $datiNuovaGara = json_decode($request->getBody()->getContents(), true);
-        $stm = Database::getInstance()->prepare("
-            select id_gara
-            from Gare
-            where nome = :nome
-        ");
-        $stm->bindParam(":nome", $datiNuovaGara['nome'], PDO::PARAM_STR);
-        $stm->execute();
-        if ($stm) {
+        if (!$datiNuovaGara || !isset($datiNuovaGara['nome'])) {
+            $response->getBody()->write(json_encode(["msg" => "Dati incompleti"]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(400);
+        }
+    
+        try {
+            $db = Database::getInstance();
+            $stm = $db->prepare("
+                SELECT id_gara
+                FROM Gare
+                WHERE nome = :nome
+            ");
+            $stm->bindParam(":nome", $datiNuovaGara['nome'], PDO::PARAM_STR);
+            $stm->execute();
+    
             if ($stm->rowCount() == 0) {
                 $disable = -1;
-
-                //Inserimento in Gare
-                $stm = Database::getInstance()->prepare("
+    
+                // Inserimento in Gare
+                $stm = $db->prepare("
                     INSERT INTO Gare (nome, maxConcorrenti, minEta, chiusa)
-                    values (:nome, :maxConcorrenti, :minEta, :chiusa);
+                    VALUES (:nome, :maxConcorrenti, :minEta, :chiusa)
                 ");
                 $stm->bindParam(":nome", $datiNuovaGara['nome'], PDO::PARAM_STR);
-                if ($datiNuovaGara['maxConcorrenti']['enable']) {
-                    $stm->bindParam(":maxConcorrenti", $datiNuovaGara['maxConcorrenti']['value'], PDO::PARAM_INT);
-                } else {
-                    $stm->bindParam(":maxConcorrenti", $disable, PDO::PARAM_INT);
-                }
-                if ($datiNuovaGara['minEta']['enable']) {
-                    $stm->bindParam(":minEta", $datiNuovaGara['minEta']['value'], PDO::PARAM_INT);
-                } else {
-                    $stm->bindParam(":minEta", $disable, PDO::PARAM_INT);
-                }
-                $stm->bindParam(":chiusa", $datiNuovaGara['chiusa'], PDO::PARAM_BOOL);
+    
+                $maxConcorrenti = $datiNuovaGara['maxConcorrenti']['enable'] ? $datiNuovaGara['maxConcorrenti']['value'] : $disable;
+                $stm->bindParam(":maxConcorrenti", $maxConcorrenti, PDO::PARAM_INT);
+    
+                $minEta = $datiNuovaGara['minEta']['enable'] ? $datiNuovaGara['minEta']['value'] : $disable;
+                $stm->bindParam(":minEta", $minEta, PDO::PARAM_INT);
+    
+                // Convert `aperta` to `chiusa`
+                $chiusa = !$datiNuovaGara['aperta'];
+                $stm->bindParam(":chiusa", $chiusa, PDO::PARAM_BOOL);
+    
                 $stm->execute();
-
-                //Recupera ID gara
-                $stm = Database::getInstance()->prepare("
-                    select id_gara
-                    from Gare
-                    where nome = :nome
-                ");
-                $stm->bindParam(":nome", $datiNuovaGara["nome"], PDO::PARAM_STR);
-                $stm->execute();
-                $stm = $stm->fetch(PDO::FETCH_ASSOC);
-                $id_gara = $stm['id_gara'];
-
-                //Inserimento organizzatore in Organizzatori
-                $stm = Database::getInstance()->prepare("
+    
+                // Recupera ID gara appena inserita
+                $id_gara = $db->lastInsertId();
+    
+                // Inserimento organizzatore in Organizzatori
+                $stm = $db->prepare("
                     INSERT INTO Organizzatori (id_gara, id_utente)
-                    values (:id_gara, :id_utente)
+                    VALUES (:id_gara, :id_utente)
                 ");
                 $stm->bindParam(":id_gara", $id_gara, PDO::PARAM_INT);
-                $stm->bindParam(":id_utente", $_SESSION["id_utente"], PDO::PARAM_INT);
+                $stm->bindParam(":id_utente", $_SESSION['id_utente'], PDO::PARAM_INT);
                 $stm->execute();
-
+    
                 $response->getBody()->write(json_encode(["msg" => "Gara inserita correttamente"]));
                 return $response->withHeader("Content-type", "application/json")->withStatus(200);
             } else {
                 $response->getBody()->write(json_encode(["msg" => "Esiste già una gara con lo stesso nome"]));
                 return $response->withHeader("Content-type", "application/json")->withStatus(400);
             }
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database", "error" => $e->getMessage()]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(500);
         }
-        $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database"]));
-        return $response->withHeader("Content-type", "application/json")->withStatus(500);
     }
+    
 }

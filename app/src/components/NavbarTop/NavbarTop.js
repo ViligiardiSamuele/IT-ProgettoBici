@@ -4,7 +4,6 @@ import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
 import { Link } from "react-router-dom";
-import { redirect } from "react-router-dom";
 
 async function logout() {
   const request = {
@@ -19,7 +18,7 @@ async function logout() {
     if (!response.ok) throw new Error("Network response was not ok");
     localStorage.removeItem("id_utente");
   } catch (error) {
-    console.error("Errore durante il logout:", error);
+    console.error("Errore:", error);
   }
   window.location.reload();
 }

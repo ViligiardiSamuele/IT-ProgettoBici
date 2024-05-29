@@ -4,7 +4,7 @@ create table
     nome varchar(20) NOT NULL,
     cognome varchar(20) NOT NULL,
     nascita char(10) NOT NULL,
-    email varchar(40) NOT NULL,
+    email varchar(40) NOT NULL UNIQUE,
     psw varchar(64) NOT NULL,
     PRIMARY KEY (id_utente)
   );
@@ -41,33 +41,35 @@ insert into
   Utenti (nome, cognome, nascita, email, psw)
 values
   (
-    'Tizio',
-    'Brutto',
-    '2020-01-01',
-    '1@gmail.com',
-    SHA2 ('1234', 256)
+    'Mario',
+    'Super',
+    '1985-09-13',
+    'nintendo.official@gmail.com',
+    SHA2 ('1800', 256)
   ),
   (
-    'Tizia',
-    'Brutta',
-    '1950-01-01',
-    '2@gmail.com',
+    'Fausto',
+    'Bomboclat',
+    '1952-10-07',
+    'nonLoSo.srl@gmail.com',
     SHA2 ('4321', 256)
   );
 
 insert into
   Gare (nome, minEta, maxConcorrenti)
 values
-  ("Gara Lunghissima", 10, 275),
-  ("Gara Media", -1, 25),
-  ("Gara Corta", 50, 57);
+  ("Gara Lunga", 50, 275),
+  ("Gara Media", 10, 100),
+  ("Gara Corta", -1, 20);
 
 insert into
   Organizzatori (id_gara, id_utente)
 values
-  (1, 1);
+  (1, 1),
+  (2, 2);
 
 insert into
   Concorrenti (id_gara, id_utente)
 values
-  (1, 2);
+  (1, 2),
+  (2, 2);

@@ -6,7 +6,6 @@ import UserInfo from "../../components/UserInfo/UserInfo.js";
 import { useState } from "react";
 import Row from "react-bootstrap/esm/Row.js";
 import Col from "react-bootstrap/esm/Col.js";
-import { Link } from "react-router-dom";
 
 export default function Home() {
   const [key, setKey] = useState("tutte-le-gare");
@@ -14,9 +13,9 @@ export default function Home() {
   return (
     <div className="App">
       <NavbarTop />
-      <div className="mx-auto mt-5 p-2" style={{ maxWidth: 800 }}>
+      <div className="mx-auto mt-5 p-2" style={{ maxWidth: 850 }}>
         {localStorage.getItem("id_utente") != null ? (
-          <div className="m-2 mt-3 p-2 mx-auto" style={{ maxWidth: 1000 }}>
+          <div className="m-2 mt-3 p-2 mx-auto">
             <UserInfo />
             <Row style={{ maxWidth: 500 }} className="mx-auto">
               <Col md={6} className="mb-2">

@@ -6,7 +6,8 @@ import Table from "react-bootstrap/Table";
 import { redirect } from "react-router-dom";
 
 export default function UserInfo() {
-  const [user, setUser] = useState("");
+  const [showInfo, setShowInfo] = useState(true);
+  const [user, setUser] = useState({});
 
   async function loadUserInfo() {
     const request = {
@@ -15,7 +16,10 @@ export default function UserInfo() {
     };
 
     const response = await fetch(`http://localhost:8080/user`, request);
-    if (response.status == 401) window.location = '/login';
+    if (response.status == 401) {
+      setShowInfo(false);
+      return;
+    }
     const json = await response.json();
     const data = {
       nome: json["nome"],
@@ -33,49 +37,53 @@ export default function UserInfo() {
   return (
     <>
       <Row>
-        <Col sm={6} className="d-flex justify-content-start">
-          <h3>
-            Bentornato{" "}
-            <span className="text-info">
-              {user.cognome} {user.nome}
-            </span>
-          </h3>
-        </Col>
-        <Col sm={6} className="d-flex justify-content-end p-2">
-          <Table>
-            <thead>
-              <tr>
-                <th>Informazioni</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  {user.iscrizioni == 0 ? (
-                    "Non sei iscrittto a nessuna gara"
-                  ) : (
-                    <>
-                      Sei iscritto a {user.iscrizioni}{" "}
-                      {user.iscrizioni > 1 ? "gare" : "gara"}
-                    </>
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  {user.gareGestite == 0 ? (
-                    "Non sei iscrittto a nessuna gara"
-                  ) : (
-                    <>
-                      Sei moderatore di {user.gareGestite}{" "}
-                      {user.gareGestite > 1 ? "gare" : "gara"}
-                    </>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </Col>
+        {showInfo && (
+          <>
+            <Col sm={6} className="d-flex justify-content-start">
+              <h3>
+                Bentornato{" "}
+                <span className="text-info">
+                  {user.cognome} {user.nome}
+                </span>
+              </h3>
+            </Col>
+            <Col sm={6} className="d-flex justify-content-end p-2">
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Informazioni</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {user.iscrizioni == 0 ? (
+                        "Non sei iscrittto a nessuna gara"
+                      ) : (
+                        <>
+                          Sei iscritto a {user.iscrizioni}{" "}
+                          {user.iscrizioni > 1 ? "gare" : "gara"}
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      {user.gareGestite == 0 ? (
+                        "Non sei moderatore di nessuna gara"
+                      ) : (
+                        <>
+                          Sei moderatore di {user.gareGestite}{" "}
+                          {user.gareGestite > 1 ? "gare" : "gara"}
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Col>
+          </>
+        )}
       </Row>
     </>
   );

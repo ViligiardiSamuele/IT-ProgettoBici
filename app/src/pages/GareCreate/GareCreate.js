@@ -38,7 +38,7 @@ export default function GareUtente() {
           <Row>
             <Col sm={6}>
               <h2>Le tue gare</h2>
-              {!gareCreate.lenght != 0 ? (
+              {gareCreate.length > 0 ? (
                 <ListaGare gare={gareCreate} mostraOpzioni={true} />
               ) : (
                 <Card className="text-center p-1">
