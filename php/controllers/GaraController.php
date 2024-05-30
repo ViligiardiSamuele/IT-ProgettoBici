@@ -274,6 +274,38 @@ class GaraController
             return $response->withStatus(401); // session expired
         }
         $modificheGara = json_decode($request->getBody()->getContents(), true);
-        
+    }
+
+    public function modifica(Request $request, Response $response, $args)
+    {
+        if (!isset($_SESSION["id_utente"])) {
+            return $response->withStatus(401); // session expired
+        }
+        $modificheGara = json_decode($request->getBody()->getContents(), true);
+
+        //verifica esistenza gara
+        $db = Database::getInstance();
+        $stm = $db->prepare("
+                SELECT nome
+                FROM Gare
+                WHERE id_gara = :id_gara
+            ");
+        $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+        $stm->execute();
+        if ($stm->rowCount() > 0) {
+            $gara = new Gara($args['id']);
+            if(in_array($_SESSION['id_utente'],$gara->getOrganizzatori())){
+                $gara->setNome($modificheGara['nome']);
+                $gara->setMaxConcorrenti($modificheGara['maxConcorrenti']);
+                $gara->setMinEta($modificheGara['minEta']);
+                $gara->setChiusa($modificheGara['minEta']);
+                $gara->updateOnDB();
+
+                
+            }
+
+        }
+
+        $gara = new Gara($args['id']);
     }
 }

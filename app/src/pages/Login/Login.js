@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 import Alert from "react-bootstrap/Alert";
 
 export default function Login() {
-  const [email, setEmail] = useState("1@gmail.com");
-  const [password, setPassword] = useState("1234");
+  const [email, setEmail] = useState("nintendo.official@gmail.com");
+  const [password, setPassword] = useState("1913");
   const [msg, setMsg] = useState("");
   const [mostraPassword, setMostraPassword] = useState(true);
   const [type, setType] = useState("password");
