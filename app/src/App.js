@@ -6,6 +6,7 @@ import Signin from "./pages/Signin/Signin.js";
 import Gare from "./pages/Gare/Gare.js";
 import Iscrizioni from "./pages/Iscrizioni/Iscrizioni.js";
 import GareCreate from "./pages/GareCreate/GareCreate.js";
+import ModificaGara from "./pages/ModificaGara/ModificaGara.js";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/gare" element={<Gare />} />
+      <Route path="/gare/:id_gara/modifica" element={<ModificaGara />} />
       <Route path="/iscrizioni" element={<Iscrizioni />} />
       <Route path="/gareCreate" element={<GareCreate />} />
     </Routes>

@@ -3,6 +3,7 @@ import Accordion from "react-bootstrap/Accordion";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import { Link } from "react-router-dom";
 
 export default function ListaGare({ gare, mostraOpzioni = false }) {
   return (
@@ -31,7 +32,9 @@ export default function ListaGare({ gare, mostraOpzioni = false }) {
                 {mostraOpzioni && (
                   <ListGroup.Item>
                     <ButtonGroup aria-label="Basic example">
-                      <Button variant="primary">Modifica</Button>
+                      <Link to={`/gare/${gara.id_gara}/modifica`}>
+                        <Button variant="primary">Modifica</Button>
+                      </Link>
                     </ButtonGroup>
                   </ListGroup.Item>
                 )}

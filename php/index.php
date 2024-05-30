@@ -99,6 +99,7 @@ $app->group('/gare', function (RouteCollectorProxy $group) {
     $group->get('/utenteNonIscritto', "GaraController:utenteNonIscritto");
     $group->post('/crea', "GaraController:creaGara");
     $group->post('/iscriviUtente/{id}', "GaraController:iscriviUtente");
+    $group->post('/disiscriviUtente/{id}', "GaraController:disiscriviUtente");
     $group->get('/{id}', "GaraController:gara");
 
     //preflight options
@@ -121,6 +122,9 @@ $app->group('/gare', function (RouteCollectorProxy $group) {
         return $response;
     });
     $group->options('/iscriviUtente/{id}', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/disiscriviUtente/{id}', function ($request, $response, $args) {
         return $response;
     });
     $group->options('/{id}', function ($request, $response, $args) {

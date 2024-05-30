@@ -4,5 +4,6 @@
 ## Su Windows
 `docker-compose up`
 ## To-Do List
- -  Opzione disiscrivi utente da una gara
+ - Opzione disiscrivi utente da una gara
+ - Opzione modifica gara creata dall'utente
  -  Altro
