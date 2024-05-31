@@ -1,5 +1,17 @@
 FROM mariadb
 ARG UID
 ARG GID
-RUN groupadd -f bici -g$GID
-RUN adduser --disabled-password --uid $UID --gid $GID --gecos "" bici
+
+# Ensure the group with GID 1000 exists or create it
+RUN if getent group $GID > /dev/null 2>&1; then \
+      echo "Group with GID $GID already exists"; \
+    else \
+      groupadd -f bici -g $GID; \
+    fi
+
+# Ensure the user with UID 1000 exists or create it
+RUN if id -u $UID > /dev/null 2>&1; then \
+      echo "User with UID $UID already exists"; \
+    else \
+      adduser --disabled-password --uid $UID --gid $GID --gecos "" bici; \
+    fi
