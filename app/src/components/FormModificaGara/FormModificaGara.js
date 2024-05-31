@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import "./FormCreazioneGara.css";
+import "./FormModificaGara.css";
 import Card from "react-bootstrap/Card";
 import { redirect } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/esm/Button";
 
-export default function FormCreazioneGara() {
+export default function FormCreazioneGara({ id_gara }) {
   const [nome, setNome] = useState("");
-  const [maxConcorrenti, setMaxConcorrenti] = useState(-1);
+  const [maxConcorrenti, setMaxConcorrenti] = useState("");
   const [minEta, setMinEta] = useState(-1);
   const [aperta, setAperta] = useState(true);
 
@@ -16,6 +16,33 @@ export default function FormCreazioneGara() {
     useState(true);
   const [hideControlMinEta, setHideControlMinEta] = useState(true);
   const [msg, setMsg] = useState("");
+
+  async function caricaInfo() {
+    const request = {
+      method: "GET",
+      credentials: "include",
+    };
+
+    const response = await fetch(
+      `http://localhost:8080/gare/${id_gara}`,
+      request
+    );
+    if (response.status == 401) return redirect("/login");
+    const json = await response.json();
+    setNome(json["nome"]);
+    if(json['maxConcorrenti'] != -1)
+      setHideControlMaxConcorrenti(false)
+    setMaxConcorrenti(json["maxConcorrenti"]);
+    if(json['minEta'] != -1)
+      setHideControlMinEta(false)
+    setMinEta(json["minEta"]);
+    setAperta(!json["chiusa"]);
+    console.log(json);
+  }
+
+  useEffect(() => {
+    caricaInfo();
+  }, []);
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -56,11 +83,12 @@ export default function FormCreazioneGara() {
             onChange={(e) => {
               setNome(e.target.value);
             }}
-            placeholder="Gara bellissima"
+            placeholder=""
           />
           <Form.Check
             type="checkbox"
             label="Massimo concorrenti"
+            checked={!hideControlMaxConcorrenti}
             className="mt-2"
             onChange={() => {
               setHideControlMaxConcorrenti(!hideControlMaxConcorrenti);
@@ -81,6 +109,7 @@ export default function FormCreazioneGara() {
             type="checkbox"
             label="Età minima"
             className="mt-2"
+            checked={!hideControlMinEta}
             onChange={() => {
               setHideControlMinEta(!hideControlMinEta);
             }}

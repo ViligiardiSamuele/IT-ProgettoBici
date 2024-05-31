@@ -273,7 +273,11 @@ class GaraController
         if (!isset($_SESSION["id_utente"])) {
             return $response->withStatus(401); // session expired
         }
-        $modificheGara = json_decode($request->getBody()->getContents(), true);
+        /**
+         * --------------------------
+         * DA FARE
+         * --------------------------
+         */
     }
 
     public function modifica(Request $request, Response $response, $args)
@@ -294,16 +298,15 @@ class GaraController
         $stm->execute();
         if ($stm->rowCount() > 0) {
             $gara = new Gara($args['id']);
-            if(in_array($_SESSION['id_utente'],$gara->getOrganizzatori())){
+            if (in_array($_SESSION['id_utente'], $gara->getOrganizzatori())) {
                 $gara->setNome($modificheGara['nome']);
                 $gara->setMaxConcorrenti($modificheGara['maxConcorrenti']);
                 $gara->setMinEta($modificheGara['minEta']);
                 $gara->setChiusa($modificheGara['minEta']);
                 $gara->updateOnDB();
-
-                
+                $concorrenti = new Concorrenti($args['id']);
+                //$concorrenti->addConcorrenti()
             }
-
         }
 
         $gara = new Gara($args['id']);

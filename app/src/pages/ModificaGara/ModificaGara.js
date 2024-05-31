@@ -1,14 +1,15 @@
 import "./ModificaGara.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { redirect } from "react-router-dom";
 import NavbarTop from "../../components/NavbarTop/NavbarTop";
 import Row from "react-bootstrap/esm/Row";
 import Col from "react-bootstrap/esm/Col";
 import Card from "react-bootstrap/Card";
 import { useParams } from "react-router-dom";
+import FormModificaGara from "../../components/FormModificaGara/FormModificaGara";
 
 
-export default function ModificaGara({gara}) {
+export default function ModificaGara() {
   const { id_gara } = useParams();
 
   async function salvaModifica() {
@@ -30,6 +31,7 @@ export default function ModificaGara({gara}) {
           <Row>
             <Col sm={12}>
               <h2>Modifica la gara {id_gara}</h2>
+              <FormModificaGara id_gara={id_gara}/>
             </Col>
           </Row>
         ) : (
