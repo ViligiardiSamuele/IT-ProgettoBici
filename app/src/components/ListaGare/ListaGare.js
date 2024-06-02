@@ -2,10 +2,45 @@ import "./ListaGare.css";
 import Accordion from "react-bootstrap/Accordion";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { Link } from "react-router-dom";
+import { redirect } from "react-router-dom";
 
-export default function ListaGare({ gare, mostraOpzioni = false }) {
+export default function ListaGare({
+  gare,
+  mostraModifica = false,
+  mostraElimina = false,
+  mostraDisiscrivi = false,
+}) {
+  async function elimina(id_gara) {
+    const request = {
+      method: "DELETE",
+      credentials: "include",
+    };
+
+    const response = await fetch(
+      `http://localhost:8080/gare/${id_gara}/elimina`,
+      request
+    );
+    if (response.status == 401) return redirect("/login");
+    window.location.reload();
+  }
+
+  async function disiscrivi(id_gara) {
+    const request = {
+      method: "DELETE",
+      credentials: "include",
+    };
+
+    const response = await fetch(
+      `http://localhost:8080/gare/${id_gara}/disiscriviConcorrente/${localStorage.getItem(
+        "id_utente"
+      )}`,
+      request
+    );
+    if (response.status == 401) return redirect("/login");
+    window.location.reload();
+  }
+
   return (
     <>
       <Accordion>
@@ -29,13 +64,33 @@ export default function ListaGare({ gare, mostraOpzioni = false }) {
                 <ListGroup.Item>
                   Organizzatori: {gara.organizzatori.length}
                 </ListGroup.Item>
-                {mostraOpzioni && (
+                {(mostraModifica || mostraElimina || mostraDisiscrivi) && (
                   <ListGroup.Item>
-                    <ButtonGroup aria-label="Basic example">
+                    {mostraModifica && (
                       <Link to={`/gare/${gara.id_gara}/modifica`}>
-                        <Button variant="primary">Modifica</Button>
+                        <Button variant="primary" className="me-2">
+                          Modifica
+                        </Button>
                       </Link>
-                    </ButtonGroup>
+                    )}
+                    {mostraElimina && (
+                      <Button
+                        variant="danger"
+                        onClick={() => elimina(gara.id_gara)}
+                        className="me-2"
+                      >
+                        Elimina
+                      </Button>
+                    )}
+                    {mostraDisiscrivi && (
+                      <Button
+                        variant="primary"
+                        onClick={() => disiscrivi(gara.id_gara)}
+                        className="me-2"
+                      >
+                        Disiscriviti
+                      </Button>
+                    )}
                   </ListGroup.Item>
                 )}
               </ListGroup>

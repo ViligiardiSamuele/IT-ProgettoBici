@@ -10,7 +10,6 @@ import Col from "react-bootstrap/Col";
 export default function Iscrizioni() {
   const [gareIscritto, setGareIscritto] = useState([]);
   const [gareAperte, setGareAperte] = useState([]);
-  const [empty, setEmpty] = useState(false);
 
   async function loadGare() {
     const request = {
@@ -21,8 +20,6 @@ export default function Iscrizioni() {
     const response = await fetch(`http://localhost:8080/gare/user`, request);
     if (response.status == 401) window.location = '/login';
     const json = await response.json();
-    if (json.length > 0) setEmpty(false);
-    else setEmpty(true);
     setGareIscritto(json);
 
     const response2 = await fetch(`http://localhost:8080/gare/aperte`, request);
@@ -42,8 +39,8 @@ export default function Iscrizioni() {
           <Row>
             <Col sm={6}>
               <h2>Le tue iscrizioni</h2>
-              {!empty ? (
-                <ListaGare gare={gareIscritto} />
+              {gareIscritto.length > 0 ? (
+                <ListaGare gare={gareIscritto} mostraDisiscrivi={true} />
               ) : (
                 <Card className="text-center p-1">
                   Non sei iscritto a nessuna gara

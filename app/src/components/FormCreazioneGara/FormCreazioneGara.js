@@ -42,6 +42,7 @@ export default function FormCreazioneGara() {
     const data = await response.json();
     if (response.status == 401) window.location = "/login";
     setMsg(data["msg"]);
+    if(response.status == 200) window.location.reload();
   }
 
   return (

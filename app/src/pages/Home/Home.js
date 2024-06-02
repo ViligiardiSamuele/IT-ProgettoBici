@@ -19,10 +19,6 @@ export default function Home() {
             <UserInfo />
             <Row style={{ maxWidth: 500 }} className="mx-auto">
               <Col md={6} className="mb-2">
-                <Button variant="success">
-                  <i className="bi bi-plus-circle"></i>
-                  <> Crea una nuova gara</>
-                </Button>
               </Col>
             </Row>
           </div>

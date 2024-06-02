@@ -41,17 +41,17 @@ insert into
   Utenti (nome, cognome, nascita, email, psw)
 values
   (
-    'Mario',
-    'Super',
-    '1985-09-13',
-    'nintendo.official@gmail.com',
-    SHA2 ('1800', 256)
+    'Alfredo',
+    'Grande',
+    '1965-09-13',
+    'alfredo.grande@gmail.com',
+    SHA2 ('1234', 256)
   ),
   (
     'Fausto',
     'Bomboclat',
-    '1952-10-07',
-    'nonLoSo.srl@gmail.com',
+    '2010-10-07',
+    '50Special@gmail.com',
     SHA2 ('4321', 256)
   );
 
@@ -66,10 +66,13 @@ insert into
   Organizzatori (id_gara, id_utente)
 values
   (1, 1),
-  (2, 2);
+  (2, 2),
+  (3, 1),
+  (3, 2);
 
 insert into
   Concorrenti (id_gara, id_utente)
 values
-  (1, 2),
+  (1, 1),
+  (2, 1),
   (2, 2);

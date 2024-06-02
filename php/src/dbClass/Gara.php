@@ -54,7 +54,7 @@ class Gara implements JsonSerializable
         $stm = $stm->fetchAll(PDO::FETCH_ASSOC);
         foreach ($stm as $array) {
             foreach ($array as $value) {
-                array_push($this->concorrenti, (int) $value);
+                array_push($this->concorrenti, new Utente((int) $value));
             }
         }
     }
@@ -72,7 +72,7 @@ class Gara implements JsonSerializable
         $stm = $stm->fetchAll(PDO::FETCH_ASSOC);
         foreach ($stm as $array) {
             foreach ($array as $value) {
-                array_push($this->organizzatori, (int) $value);
+                array_push($this->organizzatori, new Utente((int) $value));
             }
         }
     }
@@ -91,6 +91,30 @@ class Gara implements JsonSerializable
         $stm->bindParam(":id_gara", $id_gara, PDO::PARAM_INT);
         $stm->execute();
         return $stm;
+    }
+
+    public function eliminaGara()
+    {
+        $stm = Database::getInstance()->prepare("
+            DELETE FROM Concorrenti
+            WHERE id_gara = :id_gara
+        ");
+        $stm->bindParam(":id_gara", $this->id_gara, PDO::PARAM_INT);
+        $stm->execute();
+
+        $stm = Database::getInstance()->prepare("
+            DELETE FROM Organizzatori
+            WHERE id_gara = :id_gara
+        ");
+        $stm->bindParam(":id_gara", $this->id_gara, PDO::PARAM_INT);
+        $stm->execute();
+
+        $stm = Database::getInstance()->prepare("
+            DELETE FROM Gare
+            WHERE id_gara = :id_gara
+        ");
+        $stm->bindParam(":id_gara", $this->id_gara, PDO::PARAM_INT);
+        $stm->execute();
     }
 
     public function jsonSerialize()

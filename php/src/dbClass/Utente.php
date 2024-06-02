@@ -30,7 +30,7 @@ class Utente implements JsonSerializable
         $stm = $stm->fetch(PDO::FETCH_ASSOC);
         $this->nome = $stm['nome'];
         $this->cognome = $stm['cognome'];
-        $this->nascita = new DateTime($stm['nascita']);
+        $this->nascita = $stm['nascita'];
         $this->email = $stm['email'];
 
         //Iscrizioni
@@ -69,6 +69,18 @@ class Utente implements JsonSerializable
         $oggi = new DateTime();
         $eta = $oggi->diff($this->nascita)->y;
         return $eta >= $etaMinima;
+    }
+
+    function verificaSeModeraGara($id_gara){
+        $stm = Database::getInstance()->prepare("
+            SELECT *
+            FROM Organizzatori
+            WHERE id_gara = :id_gara and id_utente = :id_utente
+        ");
+        $stm->bindParam(":id_gara", $id_gara, PDO::PARAM_INT);
+        $stm->bindParam(":id_utente", $this->id_utente, PDO::PARAM_INT);
+        $stm->execute();
+        return $stm->rowCount() > 0;
     }
 
     function getId_utente()

@@ -30,7 +30,7 @@ export default function ModificaGara() {
         {localStorage.getItem("id_utente") != null ? (
           <Row>
             <Col sm={12}>
-              <h2>Modifica la gara {id_gara}</h2>
+              <h2 className="text-center "><i>Modifica la gara {id_gara}</i></h2>
               <FormModificaGara id_gara={id_gara}/>
             </Col>
           </Row>

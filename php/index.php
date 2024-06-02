@@ -51,18 +51,18 @@ $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 
 //routes
 //StatusController
-$app->group('/status', function (RouteCollectorProxy $group) {
-    $group->get('', "StatusController:status");
+$app->group('/status', function (RouteCollectorProxy $group) { //Completato
+    $group->get('', "StatusController:status"); //OK
     $group->options('', function ($request, $response, $args) {
         return $response;
     });
 });
 
 //SessionController
-$app->group('/session', function (RouteCollectorProxy $group) {
-    $group->post('/login', 'SessionController:login');
-    $group->post('/signin', "SessionController:signin");
-    $group->post('/logout', "SessionController:logout");
+$app->group('/session', function (RouteCollectorProxy $group) { //Completato
+    $group->post('/login', 'SessionController:login'); //OK
+    $group->post('/signin', "SessionController:signin"); //OK
+    $group->post('/logout', "SessionController:logout"); //OK
 
     //preflight options
     $group->options('/login', function ($request, $response, $args) {
@@ -77,9 +77,9 @@ $app->group('/session', function (RouteCollectorProxy $group) {
 });
 
 //UserController
-$app->group('/user', function (RouteCollectorProxy $group) {
-    $group->get('', "UserController:userInfo");
-    $group->get('/{id}', "UserController:userInfoByID");
+$app->group('/user', function (RouteCollectorProxy $group) { //Completato
+    $group->get('', "UserController:userInfo"); //OK
+    $group->get('/{id}', "UserController:userInfoByID"); //OK
 
     //preflight options
     $group->options('', function ($request, $response, $args) {
@@ -91,18 +91,35 @@ $app->group('/user', function (RouteCollectorProxy $group) {
 });
 
 //GareController
-$app->group('/gare', function (RouteCollectorProxy $group) {
-    $group->get('', "GaraController:gare");
-    $group->get('/aperte', "GaraController:gareAperte");
-    $group->get('/user', "GaraController:gareIscritto");
-    $group->get('/gestite', "GaraController:gareDellUtente");
-    $group->get('/utenteNonIscritto', "GaraController:utenteNonIscritto");
-    $group->post('/crea', "GaraController:creaGara");
-    $group->post('/iscriviUtente/{id}', "GaraController:iscriviUtente");
-    $group->post('/disiscriviUtente/{id}', "GaraController:disiscriviUtente");
-    $group->get('/{id}', "GaraController:gara");
+$app->group('/gare', function (RouteCollectorProxy $group) { // Completato
+    //tutte le gare
+    $group->get('', "GaraController:gare"); //OK
+    //tutte le gare aperte
+    $group->get('/aperte', "GaraController:gareAperte"); //OK
+    //tutte le gare dove l'utente è iscritto
+    $group->get('/user', "GaraController:gareIscritto"); //OK
+    //tutte le gare moderate dall'utente
+    $group->get('/gestite', "GaraController:gareDellUtente"); //OK
+    //gare in cui l'utente non è iscritto
+    $group->get('/utenteNonIscritto', "GaraController:utenteNonIscritto"); //OK
+    //iscrivi utente alla gara
+    $group->post('/iscriviUtente/{id}', "GaraController:iscriviUtente"); //OK
+    //crea gara
+    $group->post('/crea', "GaraController:creaGara"); //OK
+    //crea gara
+    $group->delete('/{id}/elimina', "GaraController:eliminaGara"); //OK
+    //modifica gara
+    $group->put('/{id}/modifica', "GaraController:modificaGara"); //OK
+    //disiscrivi utente
+    $group->delete('/{id}/disiscriviConcorrente/{id_utente}', "GaraController:disiscriviConcorrente"); //OK
+    //aggiungi un'organizzatore (tramite email)
+    $group->post('/{id}/aggiungiOrganizzatore', "GaraController:aggiungiOrganizzatore"); //OK
+    //rimuovi un'organizzatore
+    $group->delete('/{id}/rimuoviOrganizzatore/{id_utente}', "GaraController:rimuoviOrganizzatore"); //OK
+    //dati di solo una gara
+    $group->get('/{id}', "GaraController:gara"); //OK
 
-    //preflight options
+    //preflight options (mantenere lo stesso ordine)
     $group->options('', function ($request, $response, $args) {
         return $response;
     });
@@ -118,13 +135,25 @@ $app->group('/gare', function (RouteCollectorProxy $group) {
     $group->options('/utenteNonIscritto', function ($request, $response, $args) {
         return $response;
     });
+    $group->options('/iscriviUtente', function ($request, $response, $args) {
+        return $response;
+    });
     $group->options('/crea', function ($request, $response, $args) {
         return $response;
     });
-    $group->options('/iscriviUtente/{id}', function ($request, $response, $args) {
+    $group->options('/{id}/elimina', function ($request, $response, $args) {
         return $response;
     });
-    $group->options('/disiscriviUtente/{id}', function ($request, $response, $args) {
+    $group->options('/{id}/modifica', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/{id}/disiscriviConcorrente/{id_utente}', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/{id}/aggiungiOrganizzatore/{id_utente}', function ($request, $response, $args) {
+        return $response;
+    });
+    $group->options('/{id}/rimuoviOrganizzatore/{id_utente}', function ($request, $response, $args) {
         return $response;
     });
     $group->options('/{id}', function ($request, $response, $args) {

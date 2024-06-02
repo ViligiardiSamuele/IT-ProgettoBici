@@ -136,7 +136,7 @@ class GaraController
                 $gara = new Gara($args["id"]);
                 $oggi = new DateTime();
                 $utente = new Utente($_SESSION['id_utente']);
-                if ($oggi->diff($utente->getNascita())->y >= $gara->getMinEta()) {
+                if ($oggi->diff(new DateTime($utente->getNascita()))->y >= $gara->getMinEta()) {
                     $stm = Database::getInstance()->prepare("
                         INSERT INTO Concorrenti (id_gara, id_utente)
                         VALUES (:id_gara, :id_utente)
@@ -145,8 +145,9 @@ class GaraController
                     $stm->bindParam(":id_utente", $_SESSION['id_utente'], PDO::PARAM_INT);
                     $stm->execute();
                     if ($stm) {
+                        $gara->updateInfo();
                         $response->getBody()->write(json_encode([
-                            "msg" => "Iscrizione avvenuta con successo"
+                            "msg" => "Iscrizione avvenuta con successo", "gara" => $gara
                         ], JSON_PRETTY_PRINT));
                         return $response->withHeader("Content-type", "application/json")->withStatus(200);
                     } else {
@@ -200,6 +201,7 @@ class GaraController
         $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database"]));
         return $response->withHeader("Content-type", "application/json")->withStatus(500);
     }
+
     public function creaGara(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
@@ -238,7 +240,6 @@ class GaraController
                 $minEta = $datiNuovaGara['minEta']['enable'] ? $datiNuovaGara['minEta']['value'] : $disable;
                 $stm->bindParam(":minEta", $minEta, PDO::PARAM_INT);
 
-                // Convert `aperta` to `chiusa`
                 $chiusa = !$datiNuovaGara['aperta'];
                 $stm->bindParam(":chiusa", $chiusa, PDO::PARAM_BOOL);
 
@@ -268,16 +269,157 @@ class GaraController
         }
     }
 
-    public function disiscriviUtente(Request $request, Response $response, $args)
+    public function modificaGara(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
             return $response->withStatus(401); // session expired
         }
-        /**
-         * --------------------------
-         * DA FARE
-         * --------------------------
-         */
+
+        $datiGara = json_decode($request->getBody()->getContents(), true);
+        if (!$datiGara || !isset($datiGara['nome'])) {
+            $response->getBody()->write(json_encode(["msg" => "Dati incompleti"]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(400);
+        }
+
+        try {
+            $disable = -1;
+
+            $db = Database::getInstance();
+            $stm = $db->prepare("
+                UPDATE Gare
+                SET nome = :nome, maxConcorrenti = :maxConcorrenti, minEta = :minEta, chiusa = :chiusa
+                WHERE id_gara = :id_gara
+            ");
+            $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+            $stm->bindParam(":nome", $datiGara['nome'], PDO::PARAM_STR);
+
+            $maxConcorrenti = $datiGara['maxConcorrenti']['enable'] ? $datiGara['maxConcorrenti']['value'] : $disable;
+            $stm->bindParam(":maxConcorrenti", $maxConcorrenti, PDO::PARAM_INT);
+
+            $minEta = $datiGara['minEta']['enable'] ? $datiGara['minEta']['value'] : $disable;
+            $stm->bindParam(":minEta", $minEta, PDO::PARAM_INT);
+
+            $chiusa = !$datiGara['aperta'];
+            $stm->bindParam(":chiusa", $chiusa, PDO::PARAM_BOOL);
+
+            $stm->execute();
+
+            if ($stm) {
+                $response->getBody()->write(json_encode(["msg" => "Gara aggiornata correttamente"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(200);
+            } else {
+                $response->getBody()->write(json_encode(["msg" => "Errore nell'aggiornamento dei dati"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(400);
+            }
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database", "error" => $e->getMessage()]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(500);
+        }
+    }
+
+    public function eliminaGara(Request $request, Response $response, $args)
+    {
+        if (!isset($_SESSION["id_utente"])) {
+            return $response->withStatus(401); // session expired
+        }
+        try {
+            $utente = new Utente($_SESSION["id_utente"]);
+            if($utente->verificaSeModeraGara($args['id'])){
+                $gara = new Gara($args['id']);
+                $gara->eliminaGara();
+                $response->getBody()->write(json_encode(["msg" => "Gara eliminata correttamente"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(200);
+            } else {
+                $response->getBody()->write(json_encode(["msg" => "Operazione non consentita"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(400);
+            }
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database", "error" => $e->getMessage()]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(500);
+        }
+    }
+
+    public function disiscriviConcorrente(Request $request, Response $response, $args)
+    {
+        if (!isset($_SESSION["id_utente"])) {
+            return $response->withStatus(401); // session expired
+        }
+        try {
+            $stm = Database::getInstance()->prepare("
+                DELETE FROM Concorrenti
+                WHERE id_gara = :id_gara && id_utente = :id_utente
+            ");
+            $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+            $stm->bindParam(":id_utente", $args['id_utente'], PDO::PARAM_INT);
+            $stm->execute();
+            if ($stm) {
+                $response->getBody()->write(json_encode(["msg" => "ok"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(200);
+            }
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database", "error" => $e->getMessage()]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(500);
+        }
+    }
+
+    public function rimuoviOrganizzatore(Request $request, Response $response, $args)
+    {
+        if (!isset($_SESSION["id_utente"])) {
+            return $response->withStatus(401); // session expired
+        }
+        try {
+            $stm = Database::getInstance()->prepare("
+                DELETE FROM Organizzatori
+                WHERE id_gara = :id_gara && id_utente = :id_utente
+            ");
+            $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+            $stm->bindParam(":id_utente", $args['id_utente'], PDO::PARAM_INT);
+            $stm->execute();
+            if ($stm) {
+                $response->getBody()->write(json_encode(["msg" => "ok"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(200);
+            }
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database", "error" => $e->getMessage()]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(500);
+        }
+    }
+
+    public function aggiungiOrganizzatore(Request $request, Response $response, $args)
+    {
+        if (!isset($_SESSION["id_utente"])) {
+            return $response->withStatus(401); // session expired
+        }
+        $organizzatore = json_decode($request->getBody()->getContents(), true);
+        try {
+            $stm = Database::getInstance()->prepare("
+                SELECT id_utente
+                FROM Utenti
+                WHERE email = :email
+            ");
+            $stm->bindParam(":email", $organizzatore['email'], PDO::PARAM_STR);
+            $stm->execute();
+            if ($stm->rowCount() > 0) {
+                $id_utente = $stm->fetch(PDO::FETCH_ASSOC)['id_utente'];
+                $stm = Database::getInstance()->prepare("
+                    INSERT INTO Organizzatori (id_gara, id_utente)
+                    VALUES (:id_gara, :id_utente)
+                ");
+                $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
+                $stm->bindParam(":id_utente", $id_utente, PDO::PARAM_INT);
+                $stm->execute();
+                if ($stm) {
+                    $response->getBody()->write(json_encode(["organizzatore" => new Utente($id_utente)]));
+                    return $response->withHeader("Content-type", "application/json")->withStatus(200);
+                }
+            } else {
+                $response->getBody()->write(json_encode(["msg" => "L'email inserita non è presente nel database"]));
+                return $response->withHeader("Content-type", "application/json")->withStatus(400);
+            }
+        } catch (Exception $e) {
+            $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database", "error" => $e->getMessage()]));
+            return $response->withHeader("Content-type", "application/json")->withStatus(500);
+        }
     }
 
     public function modifica(Request $request, Response $response, $args)
