@@ -18,7 +18,7 @@ export default function Iscrizioni() {
     };
 
     const response = await fetch(`http://localhost:8080/gare/user`, request);
-    if (response.status == 401) window.location = '/login';
+    if (response.status == 401) window.location = "/login";
     const json = await response.json();
     setGareIscritto(json);
 
@@ -40,7 +40,11 @@ export default function Iscrizioni() {
             <Col sm={6}>
               <h2>Le tue iscrizioni</h2>
               {gareIscritto.length > 0 ? (
-                <ListaGare gare={gareIscritto} mostraDisiscrivi={true} />
+                <ListaGare
+                  gare={gareIscritto}
+                  mostraDisiscrivi={true}
+                  mostraStatistiche={true}
+                />
               ) : (
                 <Card className="text-center p-1">
                   Non sei iscritto a nessuna gara

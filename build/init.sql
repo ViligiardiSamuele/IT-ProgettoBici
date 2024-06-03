@@ -32,6 +32,7 @@ create table
   Concorrenti (
     id_gara int not null, -- pk
     id_utente int not null, -- pk
+    tempoInGara int default 0
     foreign key (id_gara) references Gare (id_gara),
     foreign key (id_utente) references Utenti (id_utente),
     primary key (id_gara, id_utente)

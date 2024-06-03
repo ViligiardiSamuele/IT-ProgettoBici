@@ -12,7 +12,7 @@ class Concorrenti implements JsonSerializable
 
     private function recuperoDati()
     {
-        //Recupero Concorreenti
+        //Recupero Concorrenti
         $stm = Database::getInstance()->prepare("
             select id_utente
             from Concorrenti

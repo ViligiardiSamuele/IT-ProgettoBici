@@ -10,6 +10,7 @@ export default function ListaGare({
   mostraModifica = false,
   mostraElimina = false,
   mostraDisiscrivi = false,
+  mostraStatistiche = false,
 }) {
   async function elimina(id_gara) {
     const request = {
@@ -40,6 +41,7 @@ export default function ListaGare({
     if (response.status == 401) return redirect("/login");
     window.location.reload();
   }
+  
 
   return (
     <>
@@ -81,6 +83,13 @@ export default function ListaGare({
                       >
                         Elimina
                       </Button>
+                    )}
+                    {mostraStatistiche && (
+                      <Link to={`/gara/${gara.id_gara}`}>
+                        <Button variant="primary" className="me-2">
+                          Statistiche
+                        </Button>
+                      </Link>
                     )}
                     {mostraDisiscrivi && (
                       <Button
