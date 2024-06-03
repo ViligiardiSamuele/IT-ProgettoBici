@@ -4,8 +4,14 @@ session_start();
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Controller per la gestione delle gare
+ */
 class GaraController
 {
+    /**
+     * Restituisce in JSON una gara
+     */
     public function gara(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
@@ -15,6 +21,9 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(200);
     }
 
+    /**
+     * Restituisce in JSON tutte le gare
+     */
     public function gare(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
@@ -36,6 +45,9 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(200);
     }
 
+    /**
+     * Restituisce in JSON tutte le gare aperte
+     */
     public function gareAperte(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
@@ -60,6 +72,9 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(200);
     }
 
+    /**
+     * Restituisce in JSON tutte le gare in cui l'utente è iscritto
+     */
     public function gareIscritto(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
@@ -83,6 +98,9 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(200);
     }
 
+    /**
+     * Restituisce in JSON tutte le gare in cui l'utente non è inscritto
+     */
     public function utenteNonIscritto(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
@@ -111,6 +129,9 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(200);
     }
 
+    /**
+     * Iscrivi l'utente ad una gara
+     */
     public function iscriviUtente(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
@@ -173,6 +194,9 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(400);
     }
 
+    /**
+     * Restituisce in JSON tutte le gare create dall'utente
+     */
     public function gareDellUtente(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"]))
@@ -202,6 +226,9 @@ class GaraController
         return $response->withHeader("Content-type", "application/json")->withStatus(500);
     }
 
+    /**
+     * Crea una gara
+     */
     public function creaGara(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
@@ -269,6 +296,9 @@ class GaraController
         }
     }
 
+    /**
+     * Modifica una gara
+     */
     public function modificaGara(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
@@ -317,6 +347,9 @@ class GaraController
         }
     }
 
+    /**
+     * Elimina una gara
+     */
     public function eliminaGara(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
@@ -324,7 +357,7 @@ class GaraController
         }
         try {
             $utente = new Utente($_SESSION["id_utente"]);
-            if($utente->verificaSeModeraGara($args['id'])){
+            if ($utente->verificaSeModeraGara($args['id'])) {
                 $gara = new Gara($args['id']);
                 $gara->eliminaGara();
                 $response->getBody()->write(json_encode(["msg" => "Gara eliminata correttamente"]));
@@ -339,6 +372,9 @@ class GaraController
         }
     }
 
+    /**
+     * Disiscrivi un concorrente
+     */
     public function disiscriviConcorrente(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
@@ -362,6 +398,9 @@ class GaraController
         }
     }
 
+    /**
+     * Rimuovi un organizzatore
+     */
     public function rimuoviOrganizzatore(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
@@ -385,6 +424,9 @@ class GaraController
         }
     }
 
+    /**
+     * Aggiungi un organizzatore
+     */
     public function aggiungiOrganizzatore(Request $request, Response $response, $args)
     {
         if (!isset($_SESSION["id_utente"])) {
@@ -420,37 +462,5 @@ class GaraController
             $response->getBody()->write(json_encode(["msg" => "Errore nella connessione al database", "error" => $e->getMessage()]));
             return $response->withHeader("Content-type", "application/json")->withStatus(500);
         }
-    }
-
-    public function modifica(Request $request, Response $response, $args)
-    {
-        if (!isset($_SESSION["id_utente"])) {
-            return $response->withStatus(401); // session expired
-        }
-        $modificheGara = json_decode($request->getBody()->getContents(), true);
-
-        //verifica esistenza gara
-        $db = Database::getInstance();
-        $stm = $db->prepare("
-                SELECT nome
-                FROM Gare
-                WHERE id_gara = :id_gara
-            ");
-        $stm->bindParam(":id_gara", $args['id'], PDO::PARAM_INT);
-        $stm->execute();
-        if ($stm->rowCount() > 0) {
-            $gara = new Gara($args['id']);
-            if (in_array($_SESSION['id_utente'], $gara->getOrganizzatori())) {
-                $gara->setNome($modificheGara['nome']);
-                $gara->setMaxConcorrenti($modificheGara['maxConcorrenti']);
-                $gara->setMinEta($modificheGara['minEta']);
-                $gara->setChiusa($modificheGara['minEta']);
-                $gara->updateOnDB();
-                $concorrenti = new Concorrenti($args['id']);
-                //$concorrenti->addConcorrenti()
-            }
-        }
-
-        $gara = new Gara($args['id']);
     }
 }

@@ -30,6 +30,7 @@ $app = AppFactory::create();
 
 $app->addBodyParsingMiddleware();
 
+//CORS Middleware
 $app->add(function (Request $request, RequestHandlerInterface $handler): Response {
     $routeContext = RouteContext::fromRequest($request);
     $routingResults = $routeContext->getRoutingResults();
@@ -53,6 +54,8 @@ $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 //StatusController
 $app->group('/status', function (RouteCollectorProxy $group) { //Completato
     $group->get('', "StatusController:status"); //OK
+
+    //preflight options (mantenere lo stesso ordine)
     $group->options('', function ($request, $response, $args) {
         return $response;
     });
@@ -64,7 +67,7 @@ $app->group('/session', function (RouteCollectorProxy $group) { //Completato
     $group->post('/signin', "SessionController:signin"); //OK
     $group->post('/logout', "SessionController:logout"); //OK
 
-    //preflight options
+    //preflight options (mantenere lo stesso ordine)
     $group->options('/login', function ($request, $response, $args) {
         return $response;
     });
@@ -81,7 +84,7 @@ $app->group('/user', function (RouteCollectorProxy $group) { //Completato
     $group->get('', "UserController:userInfo"); //OK
     $group->get('/{id}', "UserController:userInfoByID"); //OK
 
-    //preflight options
+    //preflight options (mantenere lo stesso ordine)
     $group->options('', function ($request, $response, $args) {
         return $response;
     });

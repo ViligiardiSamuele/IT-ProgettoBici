@@ -24,6 +24,9 @@ class Gara implements JsonSerializable
         $this->recuperoOrganizzatori();
     }
 
+    /**
+     * Richiedi i dati della gara al DB
+     */
     private function recuperoDati()
     {
         //Recupero dati gara
@@ -41,6 +44,9 @@ class Gara implements JsonSerializable
         $this->chiusa = $stm['chiusa'];
     }
 
+    /**
+     * Richiedi i concorrenti della gara dal DB
+     */
     private function recuperoConcorrenti()
     {
         //Recupero concorrenti
@@ -59,6 +65,9 @@ class Gara implements JsonSerializable
         }
     }
 
+    /**
+     * Richiedi gli organizzatori della gara dal DB
+     */
     private function recuperoOrganizzatori()
     {
         //Recupero organizzatori
@@ -77,6 +86,9 @@ class Gara implements JsonSerializable
         }
     }
 
+    /**
+     * Carica i dati della gara nel DB
+     */
     public function updateOnDB()
     {
         $stm = Database::getInstance()->prepare("
@@ -93,6 +105,9 @@ class Gara implements JsonSerializable
         return $stm;
     }
 
+    /**
+     * Elimina i concorrenti della gara, gli organizzatori della gara e la gara dal DB
+     */
     public function eliminaGara()
     {
         $stm = Database::getInstance()->prepare("
@@ -117,6 +132,9 @@ class Gara implements JsonSerializable
         $stm->execute();
     }
 
+    /**
+     * Serializza la gara in JSON
+     */
     public function jsonSerialize()
     {
         $attr = [];
